@@ -3,8 +3,9 @@
     package="de.hosenhasser.togfence.togfence">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
 
     <application
         android:allowBackup="true"
@@ -13,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainTogfence"
             android:label="@string/app_name"
@@ -24,14 +26,33 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".GeofenceRegistrationService"
+        <receiver
+            android:name=".GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".GeofenceTransitionsIntentService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!--<service-->
+            <!--android:name=".GeofenceTransitionsIntentService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true" />-->
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainTogfence">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.hosenhasser.togfence.togfence.MainTogfence" />
+        </activity>
     </application>
 
 </manifest>
