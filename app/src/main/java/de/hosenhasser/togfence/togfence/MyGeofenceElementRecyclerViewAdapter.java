@@ -31,7 +31,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
+        holder.mNameView.setText(mValues.get(position).name);
         holder.mItemNumberView.setText(Integer.toString(position));
         holder.mLatitudeView.setText(Double.toString(mValues.get(position).position.latitude));
         holder.mLongitudeView.setText(Double.toString(mValues.get(position).position.longitude));
@@ -57,7 +57,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mItemNumberView;
-        public final TextView mIdView;
+        public final TextView mNameView;
         public final TextView mLatitudeView;
         public final TextView mLongitudeView;
         public final TextView mRadiusView
@@ -67,7 +67,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
             super(view);
             mView = view;
             mItemNumberView = (TextView) view.findViewById(R.id.item_number);
-            mIdView = (TextView) view.findViewById(R.id.id);
+            mNameView = (TextView) view.findViewById(R.id.name);
             mLongitudeView = (TextView) view.findViewById(R.id.latitude);
             mLatitudeView = (TextView) view.findViewById(R.id.longitude);
             mRadiusView = (TextView) view.findViewById(R.id.radius);
@@ -75,7 +75,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mIdView.getText() + "'";
+            return super.toString() + " '" + mNameView.getText() + "'";
         }
     }
 }

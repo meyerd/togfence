@@ -87,6 +87,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
         });
 
         GeofenceElements.add(new GeofenceElement(
+                0,
                 "test",
                 new LatLng(48.7648, 9.27025),
                 100,
@@ -241,7 +242,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 mGeofenceList.add(new Geofence.Builder()
                         // Set the request ID of the geofence. This is a string to identify this
                         // geofence.
-                        .setRequestId(ge.id)
+                        .setRequestId("togfence_" + Integer.toString(ge._id))
 
                         .setCircularRegion(
                                 ge.position.latitude,
