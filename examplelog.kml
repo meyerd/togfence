@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<!-- created by GmapGIS.com -->
+<Document><name>MynameKML file polygon </name><description>Some descrition</description><Style id="polyStyID_0"><LineStyle><color>FF0000FF</color><width>5</width></LineStyle><PolyStyle><color>660088ff</color></PolyStyle> </Style><Style id="markerStyID_0"><IconStyle><Icon><href>http://gmapgis.com/icons/FF000032.png</href></Icon></IconStyle></Style><Placemark><name>Marker 1</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25357,48.77317,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 2</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25683,48.77252,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 3</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25808,48.77111,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 4</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25872,48.76978,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 5</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25953,48.76808,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 6</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26095,48.76621,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 7</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26202,48.76494,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 8</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.2637,48.76293,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 9</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26696,48.76415,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 10</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26872,48.76208,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 11</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27095,48.76324,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 12</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27177,48.76539,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 13</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27039,48.76661,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 14</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26928,48.76814,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 15</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26892,48.76685,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 16</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26986,48.76512,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 17</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26886,48.76414,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 18</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27059,48.7641,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 19</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27082,48.76521,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 20</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27025,48.76479,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 21</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26955,48.76452,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 22</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27101,48.76473,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 23</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27026,48.7645,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 24</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27085,48.76455,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 25</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27129,48.76454,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 26</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27077,48.76494,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 27</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27042,48.76528,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 28</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27004,48.76536,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 29</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26971,48.76485,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 30</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27152,48.76508,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 31</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27137,48.7648,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 32</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.2712,48.76516,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 33</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.27072,48.7648,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 34</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.2706,48.76459,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 35</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.2705,48.76495,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 36</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26734,48.76677,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 37</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26605,48.7676,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 38</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26491,48.76871,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 39</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26365,48.76961,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 40</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.2627,48.77159,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 41</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.26107,48.77317,0.0
+</coordinates></Point></Placemark><Placemark><name>Marker 42</name><description><![CDATA[]]> </description><styleUrl>#markerStyID_0</styleUrl><Point><coordinates>
+9.25935,48.77411,0.0
+</coordinates></Point></Placemark></Document></kml>
