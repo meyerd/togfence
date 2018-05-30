@@ -16,7 +16,7 @@ import android.text.TextUtils;
 import java.util.HashMap;
 
 public class GeofencesContentProvider extends ContentProvider {
-    static final public String PROVIDER_NAME = "geofences_content_provider"
+    static final public String PROVIDER_NAME = "geofences_content_provider";
     static final public String URL = "content://" + PROVIDER_NAME + "/geofences";
 
     static final public Uri CONTENT_URI = Uri.parse(URL);
@@ -56,6 +56,12 @@ public class GeofencesContentProvider extends ContentProvider {
                     " toggl_project TEXT NOT NULL," +
                     " toggl_tags TEXT" +
                     ");";
+
+    static final String FILL_INITIAL_DATA =
+            "INSERT INTO " + GEOFENCES_TABLE_NAME +
+                "(_id, name, lat, lon, radius, active, toggl_project, toggl_tags)" +
+                "VALUES (0, \"test\", 48.7648, 9.27025, 100, \"test-project\", \"test-tag\", 1)," +
+                "(1, \"test-deact\", 50.00, 10.00, 100, \"test-project\", \"test-tag\", 0);";
 
     private static class GeofencesDatabaseHelper extends SQLiteOpenHelper {
         GeofencesDatabaseHelper(Context context){

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -33,11 +34,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainTogfence extends AppCompatActivity implements OnCompleteListener<Void>, GeofenceElementFragment.OnListFragmentInteractionListener {
     private GeofencingClient mGeofencingClient;
     private ArrayList<Geofence> mGeofenceList;
-    public static final ArrayList<GeofenceElement> GeofenceElements = new ArrayList<>();
+    public static GeofencesContentProvider GeofenceContentProvider;
     private PendingIntent mGeofencePendingIntent;
 
     private final static String TAG = "MainTogfence";
@@ -86,15 +88,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             }
         });
 
-        GeofenceElements.add(new GeofenceElement(
-                0,
-                "test",
-                new LatLng(48.7648, 9.27025),
-                100,
-                "test-project",
-                "test-tag",
-                true
-        ));
+        GeofenceContentProvider = new GeofencesContentProvider();
 
         mGeofencePendingIntent = null;
         mGeofenceList = new ArrayList<>();
@@ -176,7 +170,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
 
     @Override
     public void onListFragmentInteraction(GeofenceElement item) {
-        Log.i(TAG, "click on: " + item.id);
+        Log.i(TAG, "click on: " + item.name);
     }
 
     public void addGeofencesButtonHandler(View view) {
@@ -237,7 +231,9 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
 
     private void populateGeofenceList() {
         int ctr = 0;
-        for (GeofenceElement ge : GeofenceElements) {
+        List<GeofenceElement> mGeofenceElements =
+                GeofenceElementListFromContentProvider.getAllElementsList(GeofenceContentProvider);
+        for (GeofenceElement ge : mGeofenceElements) {
             if (ge.active) {
                 mGeofenceList.add(new Geofence.Builder()
                         // Set the request ID of the geofence. This is a string to identify this

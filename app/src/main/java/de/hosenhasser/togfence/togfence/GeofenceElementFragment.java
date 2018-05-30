@@ -42,7 +42,11 @@ public class GeofenceElementFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyGeofenceElementRecyclerViewAdapter(MainTogfence.GeofenceElements, mListener));
+            List<GeofenceElement> mGeofenceElements =
+                    GeofenceElementListFromContentProvider.getAllElementsList(
+                            MainTogfence.GeofenceContentProvider);
+            recyclerView.setAdapter(new MyGeofenceElementRecyclerViewAdapter(
+                    mGeofenceElements, mListener));
         }
         return view;
     }

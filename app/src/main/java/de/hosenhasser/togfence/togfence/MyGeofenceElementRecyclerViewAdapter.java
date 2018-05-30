@@ -60,7 +60,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
         public final TextView mNameView;
         public final TextView mLatitudeView;
         public final TextView mLongitudeView;
-        public final TextView mRadiusView
+        public final TextView mRadiusView;
         public GeofenceElement mItem;
 
         public ViewHolder(View view) {

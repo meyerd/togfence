@@ -1,6 +1,13 @@
 package de.hosenhasser.togfence.togfence;
 
+import android.database.Cursor;
+
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static de.hosenhasser.togfence.togfence.MainTogfence.GeofenceContentProvider;
 
 public class GeofenceElement {
     public Integer _id;
