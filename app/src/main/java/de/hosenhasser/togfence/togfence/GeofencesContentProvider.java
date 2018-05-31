@@ -13,10 +13,12 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import de.hosenhasser.togfence.togfence.TogfenceApplication;
+
 import java.util.HashMap;
 
 public class GeofencesContentProvider extends ContentProvider {
-    static final public String PROVIDER_NAME = "geofences_content_provider";
+    static final public String PROVIDER_NAME = "de.hosenhasser.togfence.togfence.geofences_content_provider";
     static final public String URL = "content://" + PROVIDER_NAME + "/geofences";
 
     static final public Uri CONTENT_URI = Uri.parse(URL);
@@ -41,7 +43,6 @@ public class GeofencesContentProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "geofences/#", GEOFENCE_ID);
     }
 
-    private SQLiteDatabase db;
     static final String DATABASE_NAME = "geofences";
     static final String GEOFENCES_TABLE_NAME = "geofences";
     static final int DATABASE_VERSION = 1;
@@ -64,13 +65,14 @@ public class GeofencesContentProvider extends ContentProvider {
                 "(1, \"test-deact\", 50.00, 10.00, 100, \"test-project\", \"test-tag\", 0);";
 
     private static class GeofencesDatabaseHelper extends SQLiteOpenHelper {
-        GeofencesDatabaseHelper(Context context){
+        GeofencesDatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_DB_TABLE);
+            db.execSQL(FILL_INITIAL_DATA);
         }
 
         @Override
@@ -79,21 +81,37 @@ public class GeofencesContentProvider extends ContentProvider {
         }
     }
 
+    private static volatile GeofencesContentProvider sGeofencesContentProviderSingletonInstance;
+    private Context context;
+    private GeofencesDatabaseHelper mOpenHelper;
+
+    public static GeofencesContentProvider getInstance() {
+        if (sGeofencesContentProviderSingletonInstance == null) {
+            synchronized (GeofencesContentProvider.class) {
+                if (sGeofencesContentProviderSingletonInstance == null) sGeofencesContentProviderSingletonInstance = new GeofencesContentProvider();
+            }
+        }
+
+        return sGeofencesContentProviderSingletonInstance;
+    }
+
+    protected GeofencesContentProvider readResolve() {
+        return getInstance();
+    }
+
     public GeofencesContentProvider() {
 
     }
 
     @Override
     public boolean onCreate() {
-        Context context = getContext();
-        GeofencesDatabaseHelper dbHelper = new GeofencesDatabaseHelper(context);
-
-        db = dbHelper.getWritableDatabase();
-        return db != null;
+        mOpenHelper = new GeofencesDatabaseHelper(getContext());
+        return mOpenHelper != null;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = 0;
         switch (uriMatcher.match(uri)){
             case GEOFENCES:
@@ -128,6 +146,7 @@ public class GeofencesContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowID = db.insert(	GEOFENCES_TABLE_NAME, "", values);
 
         if (rowID > 0) {
@@ -142,51 +161,53 @@ public class GeofencesContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-            SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-            qb.setTables(GEOFENCES_TABLE_NAME);
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(GEOFENCES_TABLE_NAME);
 
-            switch (uriMatcher.match(uri)) {
-                case GEOFENCES:
-                    qb.setProjectionMap(GEOFENCES_PROJECTION_MAP);
-                    break;
+        switch (uriMatcher.match(uri)) {
+            case GEOFENCES:
+                qb.setProjectionMap(GEOFENCES_PROJECTION_MAP);
+                break;
 
-                case GEOFENCE_ID:
-                    qb.appendWhere( _ID + "=" + uri.getPathSegments().get(1));
-                    break;
+            case GEOFENCE_ID:
+                qb.appendWhere( _ID + "=" + uri.getPathSegments().get(1));
+                break;
 
-                default:
-            }
+            default:
+        }
 
-            if (sortOrder == null || sortOrder == ""){
-                sortOrder = NAME;
-            }
+        if (sortOrder == null || sortOrder == ""){
+            sortOrder = NAME;
+        }
 
-            Cursor c = qb.query(db,	projection,	selection,
-                    selectionArgs,null, null, sortOrder);
-            c.setNotificationUri(getContext().getContentResolver(), uri);
-            return c;
+        Cursor c = qb.query(db,	projection,	selection,
+                selectionArgs,null, null, sortOrder);
+        c.setNotificationUri(getContext().getContentResolver(), uri);
+        return c;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-            int count = 0;
-            switch (uriMatcher.match(uri)) {
-                case GEOFENCES:
-                    count = db.update(GEOFENCES_TABLE_NAME, values, selection, selectionArgs);
-                    break;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count = 0;
+        switch (uriMatcher.match(uri)) {
+            case GEOFENCES:
+                count = db.update(GEOFENCES_TABLE_NAME, values, selection, selectionArgs);
+                break;
 
-                case GEOFENCE_ID:
-                    count = db.update(GEOFENCES_TABLE_NAME, values,
-                            _ID + " = " + uri.getPathSegments().get(1) +
-                                    (!TextUtils.isEmpty(selection) ? " AND (" +
-                                            selection + ')' : ""), selectionArgs);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown URI " + uri );
-            }
+            case GEOFENCE_ID:
+                count = db.update(GEOFENCES_TABLE_NAME, values,
+                        _ID + " = " + uri.getPathSegments().get(1) +
+                                (!TextUtils.isEmpty(selection) ? " AND (" +
+                                        selection + ')' : ""), selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri );
+        }
 
-            getContext().getContentResolver().notifyChange(uri, null);
-            return count;
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
     }
 }

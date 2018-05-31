@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -27,7 +26,6 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,7 +37,6 @@ import java.util.List;
 public class MainTogfence extends AppCompatActivity implements OnCompleteListener<Void>, GeofenceElementFragment.OnListFragmentInteractionListener {
     private GeofencingClient mGeofencingClient;
     private ArrayList<Geofence> mGeofenceList;
-    public static GeofencesContentProvider GeofenceContentProvider;
     private PendingIntent mGeofencePendingIntent;
 
     private final static String TAG = "MainTogfence";
@@ -60,6 +57,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_togfence);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,11 +86,8 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             }
         });
 
-        GeofenceContentProvider = new GeofencesContentProvider();
-
         mGeofencePendingIntent = null;
         mGeofenceList = new ArrayList<>();
-        populateGeofenceList();
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
     }
@@ -145,6 +140,8 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     @Override
     public void onStart() {
         super.onStart();
+
+        populateGeofenceList();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -232,7 +229,8 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     private void populateGeofenceList() {
         int ctr = 0;
         List<GeofenceElement> mGeofenceElements =
-                GeofenceElementListFromContentProvider.getAllElementsList(GeofenceContentProvider);
+                GeofenceElementListFromContentResolver.getAllElementsList(
+                        getContentResolver());
         for (GeofenceElement ge : mGeofenceElements) {
             if (ge.active) {
                 mGeofenceList.add(new Geofence.Builder()

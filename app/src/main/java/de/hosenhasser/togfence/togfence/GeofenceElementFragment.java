@@ -3,15 +3,11 @@ package de.hosenhasser.togfence.togfence;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import de.hosenhasser.togfence.togfence.dummy.DummyContent;
-import de.hosenhasser.togfence.togfence.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -43,8 +39,8 @@ public class GeofenceElementFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             List<GeofenceElement> mGeofenceElements =
-                    GeofenceElementListFromContentProvider.getAllElementsList(
-                            MainTogfence.GeofenceContentProvider);
+                    GeofenceElementListFromContentResolver.getAllElementsList(
+                            getActivity().getContentResolver());
             recyclerView.setAdapter(new MyGeofenceElementRecyclerViewAdapter(
                     mGeofenceElements, mListener));
         }
