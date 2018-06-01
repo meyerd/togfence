@@ -1,6 +1,7 @@
 package de.hosenhasser.togfence.togfence;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,9 +14,13 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import de.hosenhasser.togfence.togfence.TogfenceApplication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GeofencesContentProvider extends ContentProvider {
     static final public String PROVIDER_NAME = "de.hosenhasser.togfence.togfence.geofences_content_provider";
@@ -61,8 +66,8 @@ public class GeofencesContentProvider extends ContentProvider {
     static final String FILL_INITIAL_DATA =
             "INSERT INTO " + GEOFENCES_TABLE_NAME +
                 "(_id, name, lat, lon, radius, active, toggl_project, toggl_tags)" +
-                "VALUES (0, \"test\", 48.7648, 9.27025, 100, \"test-project\", \"test-tag\", 1)," +
-                "(1, \"test-deact\", 50.00, 10.00, 100, \"test-project\", \"test-tag\", 0);";
+                "VALUES (0, \"test\", 48.7648, 9.27025, 100, 1, \"test-project\", \"test-tag\")," +
+                "(1, \"test-deact\", 50.00, 10.00, 100, 0, \"test-project\", \"test-tag\");";
 
     private static class GeofencesDatabaseHelper extends SQLiteOpenHelper {
         GeofencesDatabaseHelper(Context context) {
@@ -209,5 +214,197 @@ public class GeofencesContentProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
+    }
+
+    public static Cursor getAllGeofenceElementsCursor(ContentResolver contentResolver) {
+        ArrayList<GeofenceElement> mGeofenceElements = new ArrayList<>();
+        String[] mProjection = {
+                GeofencesContentProvider._ID,
+                GeofencesContentProvider.NAME,
+                GeofencesContentProvider.LAT,
+                GeofencesContentProvider.LON,
+                GeofencesContentProvider.RADIUS,
+                GeofencesContentProvider.ACTIVE,
+                GeofencesContentProvider.TOGGL_PROJECT,
+                GeofencesContentProvider.TOGGL_TAGS
+        };
+        String mSelectionClause = null;
+        String[] mSelectionArgs = {""};
+        String mSortOrder = GeofencesContentProvider.NAME;
+        Cursor mCursor = contentResolver.query(
+                GeofencesContentProvider.CONTENT_URI,
+                mProjection,
+                mSelectionClause,
+                null,
+                mSortOrder
+        );
+        if (mCursor != null) {
+            return mCursor;
+        }
+        return null;
+    }
+
+    // TODO: refactor code duplication
+    public static List<GeofenceElement> getAllGeofenceElementsList(ContentResolver contentResolver) {
+        ArrayList<GeofenceElement> mGeofenceElements = new ArrayList<>();
+        String[] mProjection = {
+                GeofencesContentProvider._ID,
+                GeofencesContentProvider.NAME,
+                GeofencesContentProvider.LAT,
+                GeofencesContentProvider.LON,
+                GeofencesContentProvider.RADIUS,
+                GeofencesContentProvider.ACTIVE,
+                GeofencesContentProvider.TOGGL_PROJECT,
+                GeofencesContentProvider.TOGGL_TAGS
+        };
+        String mSelectionClause = null;
+        String[] mSelectionArgs = {""};
+        String mSortOrder = GeofencesContentProvider.NAME;
+        Cursor mCursor = contentResolver.query(
+                GeofencesContentProvider.CONTENT_URI,
+                mProjection,
+                mSelectionClause,
+                null,
+                mSortOrder
+        );
+        if (mCursor != null) {
+            while (mCursor.moveToNext()) {
+                Integer mId = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider._ID)
+                );
+                String mName = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.NAME)
+                );
+                Float mLat = mCursor.getFloat(
+                        mCursor.getColumnIndex(GeofencesContentProvider.LAT)
+                );
+                Float mLon = mCursor.getFloat(
+                        mCursor.getColumnIndex(GeofencesContentProvider.LON)
+                );
+                LatLng mPosition = new LatLng(mLat, mLon);
+                int mRadius = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider.RADIUS)
+                );
+                String mTogglProject = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_PROJECT)
+                );
+                String mTogglTags = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS)
+                );
+                boolean mActive =
+                        (mCursor.getInt(
+                                mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
+                        ) == 1);
+                mGeofenceElements.add(
+                        new GeofenceElement(
+                                mId, mName, mPosition, mRadius, mTogglProject, mTogglTags, mActive
+                        )
+                );
+            }
+        }
+        return mGeofenceElements;
+    }
+
+    public static GeofenceElement getGeofenceElement(ContentResolver contentResolver, int id) {
+        GeofenceElement mGeofenceElement = null;
+        String[] mProjection = {
+                GeofencesContentProvider._ID,
+                GeofencesContentProvider.NAME,
+                GeofencesContentProvider.LAT,
+                GeofencesContentProvider.LON,
+                GeofencesContentProvider.RADIUS,
+                GeofencesContentProvider.ACTIVE,
+                GeofencesContentProvider.TOGGL_PROJECT,
+                GeofencesContentProvider.TOGGL_TAGS
+        };
+        String mSelectionClause = GeofencesContentProvider._ID + " = ?";
+        String[] mSelectionArgs = {Integer.toString(id)};
+        String mSortOrder = GeofencesContentProvider.NAME;
+        Cursor mCursor = contentResolver.query(
+                GeofencesContentProvider.CONTENT_URI,
+                mProjection,
+                mSelectionClause,
+                mSelectionArgs,
+                mSortOrder
+        );
+        if (mCursor != null) {
+            if (mCursor.moveToFirst()) {
+                Integer mId = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider._ID)
+                );
+                String mName = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.NAME)
+                );
+                Float mLat = mCursor.getFloat(
+                        mCursor.getColumnIndex(GeofencesContentProvider.LAT)
+                );
+                Float mLon = mCursor.getFloat(
+                        mCursor.getColumnIndex(GeofencesContentProvider.LON)
+                );
+                LatLng mPosition = new LatLng(mLat, mLon);
+                int mRadius = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider.RADIUS)
+                );
+                String mTogglProject = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_PROJECT)
+                );
+                String mTogglTags = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS)
+                );
+                boolean mActive =
+                        (mCursor.getInt(
+                                mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
+                        ) == 1);
+                mGeofenceElement = new GeofenceElement(
+                        mId, mName, mPosition, mRadius, mTogglProject, mTogglTags, mActive);
+            }
+        }
+        return mGeofenceElement;
+    }
+
+    public static void insertGeofenceElement(ContentResolver contentResolver, GeofenceElement ge) {
+        ContentValues cv = new ContentValues();
+        cv.put(GeofencesContentProvider.NAME, ge.name);
+        cv.put(GeofencesContentProvider.LAT, ge.position.latitude);
+        cv.put(GeofencesContentProvider.LON, ge.position.longitude);
+        cv.put(GeofencesContentProvider.RADIUS, ge.radius);
+        cv.put(GeofencesContentProvider.ACTIVE, ge.active);
+        cv.put(GeofencesContentProvider.TOGGL_PROJECT, ge.toggl_project);
+        cv.put(GeofencesContentProvider.TOGGL_TAGS, ge.toggl_tag);
+
+        contentResolver.insert(
+                GeofencesContentProvider.CONTENT_URI, cv
+        );
+    }
+
+    public static void updateGeofenceElement(ContentResolver contentResolver, GeofenceElement ge) {
+        ContentValues cv = new ContentValues();
+        cv.put(GeofencesContentProvider.NAME, ge.name);
+        cv.put(GeofencesContentProvider.LAT, ge.position.latitude);
+        cv.put(GeofencesContentProvider.LON, ge.position.longitude);
+        cv.put(GeofencesContentProvider.RADIUS, ge.radius);
+        cv.put(GeofencesContentProvider.ACTIVE, ge.active);
+        cv.put(GeofencesContentProvider.TOGGL_PROJECT, ge.toggl_project);
+        cv.put(GeofencesContentProvider.TOGGL_TAGS, ge.toggl_tag);
+
+        String selection = GeofencesContentProvider._ID + " = ?";
+        String[] selectionArgs = {Integer.toString(ge._id)};
+
+        contentResolver.update(
+                GeofencesContentProvider.CONTENT_URI,
+                cv,
+                selection,
+                selectionArgs
+        );
+    }
+
+    public static void deleteGeofenceElement(ContentResolver contentResolver, int id) {
+        String selection = GeofencesContentProvider._ID + " = ?";
+        String[] selectionArgs = {Integer.toString(id)};
+        contentResolver.delete(
+                GeofencesContentProvider.CONTENT_URI,
+                selection,
+                selectionArgs
+        );
     }
 }

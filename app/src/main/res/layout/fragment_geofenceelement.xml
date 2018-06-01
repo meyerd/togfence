@@ -28,42 +28,64 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:text="@string/latitude"/>
-        <TextView
-            android:id="@+id/latitude"
-            android:layout_margin="@dimen/text_margin"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"
+                android:text="@string/latitude"/>
+            <TextView
+                android:id="@+id/latitude"
+                android:layout_margin="@dimen/text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"
+                android:text="@string/longitude"/>
+            <TextView
+                android:id="@+id/longitude"
+                android:layout_margin="@dimen/text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:text="@string/longitude"/>
-        <TextView
-            android:id="@+id/longitude"
-            android:layout_margin="@dimen/text_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:text="@string/radius"/>
-        <TextView
-            android:id="@+id/radius"
-            android:layout_margin="@dimen/text_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"
+                android:text="@string/radius"/>
+            <TextView
+                android:id="@+id/radius"
+                android:layout_margin="@dimen/text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"
+                android:text="@string/toggl_project"/>
+            <TextView
+                android:id="@+id/toggl_project"
+                android:layout_margin="@dimen/text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

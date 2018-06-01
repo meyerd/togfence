@@ -1,6 +1,8 @@
 package de.hosenhasser.togfence.togfence;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -66,8 +68,10 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), GeofenceEditor.class);
+                startActivity(intent);
             }
         });
 
@@ -86,10 +90,16 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             }
         });
 
+        checkGooglePlayServices(this);
+
         mGeofencePendingIntent = null;
         mGeofenceList = new ArrayList<>();
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
+    }
+
+    private void checkGooglePlayServices(Activity activity) {
+        Task task = GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(activity);
     }
 
     private boolean checkPermissions() {
@@ -141,7 +151,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     public void onStart() {
         super.onStart();
 
-        populateGeofenceList();
+        refreshGeofenceList();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -168,6 +178,10 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     @Override
     public void onListFragmentInteraction(GeofenceElement item) {
         Log.i(TAG, "click on: " + item.name);
+        Intent intent = new Intent(this, GeofenceEditor.class);
+        intent.putExtra(GeofenceEditor.EXTRA_GEOFENCE_ELEMENT_ID, item._id);
+        startActivity(intent);
+
     }
 
     public void addGeofencesButtonHandler(View view) {
@@ -226,11 +240,12 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
         }
     }
 
-    private void populateGeofenceList() {
+    public void refreshGeofenceList() {
         int ctr = 0;
         List<GeofenceElement> mGeofenceElements =
-                GeofenceElementListFromContentResolver.getAllElementsList(
+                GeofencesContentProvider.getAllGeofenceElementsList(
                         getContentResolver());
+        mGeofenceList.clear();
         for (GeofenceElement ge : mGeofenceElements) {
             if (ge.active) {
                 mGeofenceList.add(new Geofence.Builder()
@@ -243,9 +258,11 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                                 ge.position.longitude,
                                 ge.radius
                         )
-                        .setNotificationResponsiveness(1)
+                        .setNotificationResponsiveness(
+                                Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(
+                                        "responsiveness", "300")) * 1000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                        .setLoiteringDelay(20 * 1000)
+                        .setLoiteringDelay(5 * 60 * 1000)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                                 Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
                         .build());
@@ -344,7 +361,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             // Handle success
             return true;
         } else {
-            // Handle the error
+            GoogleApiAvailability.getInstance().showErrorNotification(context, resultCode);
             return false;
         }
     }
@@ -389,6 +406,10 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     public void startGeofencing() {
+        if (!checkPermissions()) {
+            requestPermissions();
+            return;
+        }
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
             .addOnSuccessListener(this, new OnSuccessListener<Void>() {
                 @Override
