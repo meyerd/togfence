@@ -21,7 +21,7 @@
     <EditTextPreference
         android:capitalize="none"
         android:inputType="textNoSuggestions"
-        android:defaultValue="NOTVALID"
+        android:defaultValue="INVALID"
         android:key="toggl_api_key"
         android:maxLines="1"
         android:selectAllOnFocus="true"

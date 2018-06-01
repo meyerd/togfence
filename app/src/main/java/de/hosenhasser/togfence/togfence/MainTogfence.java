@@ -185,6 +185,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     public void addGeofencesButtonHandler(View view) {
+        JTogglSingleton jtoggl = JTogglSingleton.getInstance();
         if (!checkPermissions()) {
             mPendingGeofenceTask = PendingGeofenceTask.ADD;
             requestPermissions();
@@ -406,6 +407,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     public void startGeofencing() {
+        JTogglSingleton jToggl = JTogglSingleton.getInstance();
         if (!checkPermissions()) {
             requestPermissions();
             return;

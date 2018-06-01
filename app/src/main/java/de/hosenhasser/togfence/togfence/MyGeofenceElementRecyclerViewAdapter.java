@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import de.hosenhasser.togfence.togfence.GeofenceElementFragment.OnListFragmentInteractionListener;
-import de.hosenhasser.togfence.togfence.dummy.DummyContent.DummyItem;
-
-import java.util.List;
 
 public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<MyGeofenceElementRecyclerViewAdapter.ViewHolder> {
 
