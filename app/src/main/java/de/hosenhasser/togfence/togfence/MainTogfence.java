@@ -2,7 +2,6 @@ package de.hosenhasser.togfence.togfence;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -191,7 +190,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     public void addGeofencesButtonHandler(View view) {
-        JTogglSingleton jtoggl = JTogglSingleton.getInstance();
+        TogglRetrofit jtoggl = TogglRetrofit.getInstance();
         if (!checkPermissions()) {
             mPendingGeofenceTask = PendingGeofenceTask.ADD;
             requestPermissions();

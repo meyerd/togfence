@@ -1,6 +1,5 @@
 package de.hosenhasser.togfence.togfence;
 
-import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,7 +9,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -22,8 +20,6 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ch.simas.jtoggl.JToggl;
 
 
 public class GeofenceTransitionsIntentService extends JobIntentService {
@@ -58,7 +54,7 @@ public class GeofenceTransitionsIntentService extends JobIntentService {
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         ContentResolver contentResolver = getContentResolver();
-        JTogglSingleton jToggl = JTogglSingleton.getInstance();
+        TogglRetrofit jToggl = TogglRetrofit.getInstance();
 
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
