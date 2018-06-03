@@ -161,6 +161,12 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     private GeofencingRequest getGeofencingRequest() {
+        if (mGeofenceList.size() < 1) {
+            Toast.makeText(
+                    TogfenceApplication.getAppContext(),
+                    TogfenceApplication.getAppContext().getString(R.string.no_active_geofence),
+                    Toast.LENGTH_LONG).show();
+        }
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
         // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a

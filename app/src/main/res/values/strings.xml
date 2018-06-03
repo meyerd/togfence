@@ -10,6 +10,7 @@
     <string name="play_services_problems">Problems with Play services, restart app</string>
     <string name="geofences_added">Geofences added</string>
     <string name="geofences_removed">Geofences removed</string>
+    <string name="no_active_geofence">No active geofence</string>
 
     <string name="unknown_geofence_error">Unknown geofence error</string>
     <string name="geofence_not_available">Geofencing not available</string>
