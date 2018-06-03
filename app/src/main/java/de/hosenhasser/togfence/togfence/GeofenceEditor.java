@@ -72,19 +72,13 @@ public class GeofenceEditor extends AppCompatActivity {
         }
 
         name_edit_text = (EditText) findViewById(R.id.name_edit_text);
-        name_edit_text.setText(mGeofenceElement.name);
         latitude_text_view = (TextView) findViewById(R.id.latitude);
-        latitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.latitude));
         longitude_text_view = (TextView) findViewById(R.id.longitude);
-        longitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.longitude));
         radius_edit_text = (EditText) findViewById(R.id.radius_edit_text);
-        radius_edit_text.setText(Integer.toString(mGeofenceElement.radius));
         toggl_project_edit_text = (EditText) findViewById(R.id.toggl_project_edit_text);
-        toggl_project_edit_text.setText(mGeofenceElement.toggl_project);
         toggl_tags_edit_text = (EditText) findViewById(R.id.toggl_tags_edit_text);
-        toggl_tags_edit_text.setText(mGeofenceElement.toggl_tag);
         active_check_box = (CheckBox) findViewById(R.id.active_check_box);
-        active_check_box.setChecked(mGeofenceElement.active);
+        updateTextfields();
 
         Button deletebutton = (Button) findViewById(R.id.delete_button);
         deletebutton.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +104,16 @@ public class GeofenceEditor extends AppCompatActivity {
         });
     }
 
+    private void updateTextfields() {
+        name_edit_text.setText(mGeofenceElement.name);
+        latitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.latitude));
+        longitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.longitude));
+        radius_edit_text.setText(Integer.toString(mGeofenceElement.radius));
+        toggl_project_edit_text.setText(mGeofenceElement.toggl_project);
+        toggl_tags_edit_text.setText(mGeofenceElement.toggl_tag);
+        active_check_box.setChecked(mGeofenceElement.active);
+    }
+
     public void deleteGeofenceButtonHandler(View view) {
         if (!mNewGeofence) {
             GeofencesContentProvider.deleteGeofenceElement(
@@ -125,11 +129,11 @@ public class GeofenceEditor extends AppCompatActivity {
         mGeofenceElement.radius = Integer.parseInt(radius_edit_text.getText().toString());
         mGeofenceElement.toggl_tag = toggl_tags_edit_text.getText().toString();
         mGeofenceElement.toggl_project = toggl_project_edit_text.getText().toString();
-        LatLng position = new LatLng(
-                Double.parseDouble(latitude_text_view.getText().toString()),
-                Double.parseDouble(longitude_text_view.getText().toString())
-        );
-        mGeofenceElement.position = position;
+//        LatLng position = new LatLng(
+//                Double.parseDouble(latitude_text_view.getText().toString()),
+//                Double.parseDouble(longitude_text_view.getText().toString())
+//        );
+//        mGeofenceElement.position = position;
         if (mNewGeofence) {
             GeofencesContentProvider.insertGeofenceElement(
                     getContentResolver(), mGeofenceElement
@@ -155,11 +159,13 @@ public class GeofenceEditor extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
-            Status status = PlacePicker.getStatus(this, data);
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                LatLng position = place.getLatLng();
+//                String toastMsg = String.format("Place: %s", place.getName());
+//                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                mGeofenceElement.position = position;
+                updateTextfields();
             }
         }
     }

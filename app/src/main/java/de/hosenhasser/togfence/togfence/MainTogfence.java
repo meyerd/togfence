@@ -258,7 +258,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 mGeofenceList.add(new Geofence.Builder()
                         // Set the request ID of the geofence. This is a string to identify this
                         // geofence.
-                        .setRequestId("togfence_" + Integer.toString(ge._id))
+                        .setRequestId(Integer.toString(ge._id))
 
                         .setCircularRegion(
                                 ge.position.latitude,
@@ -356,13 +356,8 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 .setAction(getString(actionStringId), listener).show();
     }
 
-
-    /**
-     * @return true if Google Play services is available, otherwise false
-     */
     private boolean servicesConnected(Context context) {
         // Check that Google Play services is available
-//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
         if (ConnectionResult.SUCCESS == resultCode) {
             // Handle success
@@ -413,7 +408,6 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     public void startGeofencing() {
-        JTogglSingleton jToggl = JTogglSingleton.getInstance();
         if (!checkPermissions()) {
             requestPermissions();
             return;

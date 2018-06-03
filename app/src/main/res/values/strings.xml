@@ -20,6 +20,10 @@
     <string name="geofence_transition_notification_text">Transited in/from geofence</string>
 
     <string name="no_valid_toggl_api_key">You must set the toggl API key in preferences</string>
+    <string name="no_toggl_workspaces">No toggl workspaces</string>
+    <string name="toggl_description_start">togfence: start</string>
+    <string name="toggl_description_stop">togfence: stop</string>
+    <string name="toggl_created_with">Togfence</string>
 
     <string name="radius">Radius</string>
     <string name="latitude">Latitude</string>
