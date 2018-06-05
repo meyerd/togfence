@@ -35,6 +35,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hosenhasser.togfence.togfence.Toggl.TogglRetrofit;
+
 public class MainTogfence extends AppCompatActivity implements OnCompleteListener<Void>, GeofenceElementFragment.OnListFragmentInteractionListener {
     private GeofencingClient mGeofencingClient;
     private ArrayList<Geofence> mGeofenceList;
@@ -86,6 +88,14 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             @Override
             public void onClick(View view) {
                 removeGeofencesButtonHandler(view);
+            }
+        });
+        Button testbutton = (Button) findViewById(R.id.test_button);
+        testbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TogglRetrofit tr = TogglRetrofit.getInstance();
+                tr.dumpMe();
             }
         });
 

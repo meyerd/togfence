@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.util.MapUtils;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 public class GeofenceEditor extends AppCompatActivity {
     public static final String TAG = "GeofenceEditor";
@@ -147,8 +149,9 @@ public class GeofenceEditor extends AppCompatActivity {
     }
 
     public void pickLocationButtonHandler(View view) {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            builder.setLatLngBounds(new LatLngBounds(mGeofenceElement.position, mGeofenceElement.position));
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesNotAvailableException e) {
             Toast.makeText(this, getResources().getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show();

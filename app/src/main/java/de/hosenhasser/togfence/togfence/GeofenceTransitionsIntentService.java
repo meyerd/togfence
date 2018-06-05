@@ -21,6 +21,8 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hosenhasser.togfence.togfence.Toggl.TogglRetrofit;
+
 
 public class GeofenceTransitionsIntentService extends JobIntentService {
     private static final int JOB_ID = 573;
