@@ -1,18 +1,21 @@
 package de.hosenhasser.togfence.togfence.Toggl;
 
 public class TogglProject {
-    public String name;
+    public int id;
     public int wid;
     public int cid;
-    public boolean active;
-    public boolean is_private;
-    public boolean template;
-    public int template_id;
+    public String name;
     public boolean billable;
+    public boolean is_private;
+    public boolean active;
+    public boolean template;
+    public String at;
+    public String created_at;
+    public String color;
+    public int template_id;
     public boolean auto_estimates;
     public int estimated_hours;
-    public String at;
-    public int color;
+    public String hex_color;
     public float rate;
 
     @Override
@@ -29,7 +32,7 @@ public class TogglProject {
                 "auto_estimates: " + (auto_estimates ? "true" : "false") + "\n" +
                 "estimated_hours: " + Integer.toString(estimated_hours) + "\n" +
                 "at: " + at + "\n" +
-                "color: " + Integer.toString(color) + "\n" +
+                "color: " + color + "\n" +
                 "rate: " + Float.toString(rate) + "\n";
     }
 }

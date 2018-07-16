@@ -1,8 +1,10 @@
 package de.hosenhasser.togfence.togfence.Toggl;
 
 public class TogglTag {
+    public int id;
     public String name;
     public int wid;
+    public String at;
 
     @Override
     public String toString() {

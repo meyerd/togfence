@@ -1,6 +1,8 @@
 package de.hosenhasser.togfence.togfence.Toggl;
 
 public class TogglWorkspace {
+    public int id;
+    public int profile;
     public String name;
     public boolean premium;
     public boolean admin;
@@ -8,6 +10,10 @@ public class TogglWorkspace {
     public String default_currency;
     public boolean only_admins_may_create_projects;
     public boolean only_admins_see_billable_rates;
+    public boolean only_admins_see_team_dashboard;
+    public boolean projects_billable_by_default;
+    public String api_token;
+    public boolean ical_enabled;
     public int rounding;
     public int rounding_minutes;
     public String at;

@@ -71,13 +71,17 @@ public class TogglRetrofit {
                 .addInterceptor(new BasicAuthInterceptor(toggl_api_key))
                 .addInterceptor(logging)
                 .build();
-        Gson gson = new GsonBuilder()
+        Gson gsonTogglUser = new GsonBuilder()
                 .registerTypeAdapter(TogglUser.class, new DataDeserializer<TogglUser>())
+                .create();
+        Gson gsonFullTogglUser = new GsonBuilder()
+                .registerTypeAdapter(FullTogglUser.class, new DataDeserializer<FullTogglUser>())
                 .create();
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.toggl.com")
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(gsonFullTogglUser))
+//                .addConverterFactory(GsonConverterFactory.create(gsonTogglUser))
                 .build();
         service = retrofit.create(TogglService.class);
 
@@ -94,22 +98,39 @@ public class TogglRetrofit {
         if (!checkValid()) {
             return;
         }
-        Call<TogglUser> call = service.me();
-        call.enqueue(new Callback<TogglUser>() {
+        Call<FullTogglUser> call = service.fullme();
+        call.enqueue(new Callback<FullTogglUser>() {
             @Override
-            public void onResponse(Call<TogglUser> call, Response<TogglUser> response) {
+            public void onResponse(Call<FullTogglUser> call, Response<FullTogglUser> response) {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
-                TogglUser u = response.body();
+                FullTogglUser u = response.body();
                 Log.i(TAG, "User: " + u.toString());
             }
 
             @Override
-            public void onFailure(Call<TogglUser> call, Throwable t) {
+            public void onFailure(Call<FullTogglUser> call, Throwable t) {
                 Log.i(TAG, "toggl user call failed: " + t.getMessage());
                 call.cancel();
             }
         });
+
+//        Call<TogglUser> call = service.me();
+//        call.enqueue(new Callback<TogglUser>() {
+//            @Override
+//            public void onResponse(Call<TogglUser> call, Response<TogglUser> response) {
+//                Log.i(TAG, response.code() + "");
+//                Log.i(TAG, "raw: " + response.raw().body().toString());
+//                TogglUser u = response.body();
+//                Log.i(TAG, "User: " + u.toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<TogglUser> call, Throwable t) {
+//                Log.i(TAG, "toggl user call failed: " + t.getMessage());
+//                call.cancel();
+//            }
+//        });
 
     }
 

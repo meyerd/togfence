@@ -1,6 +1,7 @@
 package de.hosenhasser.togfence.togfence.Toggl;
 
 public class TogglClient {
+    public int id;
     public String name;
     public int wid;
     public String notes;

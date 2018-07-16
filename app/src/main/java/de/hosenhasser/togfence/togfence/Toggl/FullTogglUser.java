@@ -10,7 +10,6 @@ public class FullTogglUser {
     public String api_token;
     public int default_wid;
     public String email;
-//    @SerializedName("fullname")
     public String fullname;
     public String jquery_timeofday_format;
     public String jquery_date_format;
@@ -22,18 +21,31 @@ public class FullTogglUser {
     public String image_url;
     public boolean sidebar_piechart;
     public String at;
+    public String created_at;
+    public int retention;
+    public boolean record_timeline;
+    public boolean render_timeline;
+    public boolean timeline_enabled;
+    public boolean timeline_experiment;
     public Map<String, String> new_blog_post = new HashMap<>();
+    public boolean should_upgrade;
+    public boolean achievements_enabled;
+    public String timezone;
+    public boolean openid_enabled;
     public boolean send_product_emails;
     public boolean send_weekly_report;
     public boolean send_timer_notifications;
-    public boolean openid_enabled;
-    public String timezone;
-    public List<TogglClient> clients = new ArrayList<>();
+    public String last_blog_entry;
+    public Map<String, String> invitation;
     public List<TogglProject> projects = new ArrayList<>();
     public List<TogglTag> tags = new ArrayList<>();
-    public List<TogglTask> tasks = new ArrayList<>();
     public List<TogglWorkspace> workspaces = new ArrayList<>();
-    public List<TogglTimeEntry> time_entries = new ArrayList<>();
+    public List<TogglClient> clients = new ArrayList<>();
+    public boolean used_next;
+    public String duration_format;
+    public Map<String, String> obm;
+//    public List<TogglTask> tasks = new ArrayList<>();
+//    public List<TogglTimeEntry> time_entries = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -62,8 +74,8 @@ public class FullTogglUser {
                 "clients: " + clients.toString() + "\n" +
                 "projects: " + projects.toString() + "\n" +
                 "tags: " + tags.toString() + "\n" +
-                "tasks: " + tasks.toString() + "\n" +
-                "workspaces: " + workspaces.toString() + "\n" +
-                "time_entries: " + time_entries.toString() + "\n";
+//                "tasks: " + tasks.toString() + "\n" +
+                "workspaces: " + workspaces.toString() + "\n";
+//                "time_entries: " + time_entries.toString() + "\n";
     }
 }
