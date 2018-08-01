@@ -81,7 +81,7 @@ public class TogglRetrofit {
                 .baseUrl("https://www.toggl.com")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gsonFullTogglUser))
-//                .addConverterFactory(GsonConverterFactory.create(gsonTogglUser))
+                .addConverterFactory(GsonConverterFactory.create(gsonTogglUser))
                 .build();
         service = retrofit.create(TogglService.class);
 
