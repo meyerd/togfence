@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import de.hosenhasser.togfence.togfence.GeofenceElementFragment.OnListFragmentInteractionListener;
+import de.hosenhasser.togfence.togfence.Toggl.TogglContentProvider;
+import de.hosenhasser.togfence.togfence.Toggl.TogglProject;
 
 public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<MyGeofenceElementRecyclerViewAdapter.ViewHolder> {
 
@@ -60,7 +62,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
         holder.mLatitudeView.setText(String.format("%.5f", ge.position.latitude));
         holder.mLongitudeView.setText(String.format("%.5f", ge.position.longitude));
         holder.mRadiusView.setText(String.format("%d", ge.radius));
-        holder.mTogglProjectView.setText(ge.toggl_project);
+        holder.mTogglProjectView.setText(ge.toggl_project_text);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

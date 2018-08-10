@@ -29,8 +29,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test"
-                android:id="@+id/test_button" />
+                android:text="Update Toggl Data"
+                android:id="@+id/update_toggl_data" />
 
         </LinearLayout>
         <LinearLayout

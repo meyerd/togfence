@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,10 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
+import de.hosenhasser.togfence.togfence.Toggl.TogglContentProvider;
+import de.hosenhasser.togfence.togfence.Toggl.TogglProject;
+import de.hosenhasser.togfence.togfence.Toggl.TogglTag;
 
 public class GeofenceEditor extends AppCompatActivity {
     public static final String TAG = "GeofenceEditor";
@@ -35,8 +41,8 @@ public class GeofenceEditor extends AppCompatActivity {
     private TextView latitude_text_view;
     private TextView longitude_text_view;
     private EditText radius_edit_text;
-    private EditText toggl_project_edit_text;
-    private EditText toggl_tags_edit_text;
+    private Spinner toggl_project_edit_text;
+    private Spinner toggl_tags_edit_text;
     private CheckBox active_check_box;
 
     @Override
@@ -77,8 +83,8 @@ public class GeofenceEditor extends AppCompatActivity {
         latitude_text_view = (TextView) findViewById(R.id.latitude);
         longitude_text_view = (TextView) findViewById(R.id.longitude);
         radius_edit_text = (EditText) findViewById(R.id.radius_edit_text);
-        toggl_project_edit_text = (EditText) findViewById(R.id.toggl_project_edit_text);
-        toggl_tags_edit_text = (EditText) findViewById(R.id.toggl_tags_edit_text);
+        toggl_project_edit_text = (Spinner) findViewById(R.id.toggl_project_edit_text);
+        toggl_tags_edit_text = (Spinner) findViewById(R.id.toggl_tags_edit_text);
         active_check_box = (CheckBox) findViewById(R.id.active_check_box);
         updateTextfields();
 
@@ -111,8 +117,16 @@ public class GeofenceEditor extends AppCompatActivity {
         latitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.latitude));
         longitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.longitude));
         radius_edit_text.setText(Integer.toString(mGeofenceElement.radius));
-        toggl_project_edit_text.setText(mGeofenceElement.toggl_project);
-        toggl_tags_edit_text.setText(mGeofenceElement.toggl_tag);
+//        toggl_project_edit_text.setText(mGeofenceElement.toggl_project);
+        ArrayAdapter<TogglProject> toggl_projects_array_adapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                TogglContentProvider.getAllProjectsList(getApplicationContext().getContentResolver()));
+        toggl_project_edit_text.setAdapter(toggl_projects_array_adapter);
+//        toggl_tags_edit_text.setText(mGeofenceElement.toggl_tag);
+        ArrayAdapter<TogglTag> togl_tags_array_adapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                TogglContentProvider.getAllTagsList(getApplicationContext().getContentResolver()));
+        toggl_tags_edit_text.setAdapter(togl_tags_array_adapter);
         active_check_box.setChecked(mGeofenceElement.active);
     }
 
@@ -129,8 +143,14 @@ public class GeofenceEditor extends AppCompatActivity {
         mGeofenceElement.name = name_edit_text.getText().toString();
         mGeofenceElement.active = active_check_box.isChecked();
         mGeofenceElement.radius = Integer.parseInt(radius_edit_text.getText().toString());
-        mGeofenceElement.toggl_tag = toggl_tags_edit_text.getText().toString();
-        mGeofenceElement.toggl_project = toggl_project_edit_text.getText().toString();
+//        mGeofenceElement.toggl_tag = toggl_tags_edit_text.getText().toString();
+        TogglTag tag = (TogglTag) toggl_tags_edit_text.getSelectedItem();
+        mGeofenceElement.toggl_tag = tag.id;
+        mGeofenceElement.toggl_tag_text = tag.name;
+//        mGeofenceElement.toggl_project = toggl_project_edit_text.getText().toString();
+        TogglProject project = (TogglProject) toggl_project_edit_text.getSelectedItem();
+        mGeofenceElement.toggl_project = project.id;
+        mGeofenceElement.toggl_project_text = project.name;
 //        LatLng position = new LatLng(
 //                Double.parseDouble(latitude_text_view.getText().toString()),
 //                Double.parseDouble(longitude_text_view.getText().toString())

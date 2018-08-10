@@ -6,10 +6,14 @@ public class TogglTag {
     public int wid;
     public String at;
 
+//    @Override
+//    public String toString() {
+//        return "TogglTag\n" +
+//                "name: " + name + "\n" +
+//                "wid: " + Integer.toString(wid);
+//    }
     @Override
     public String toString() {
-        return "TogglTag\n" +
-                "name: " + name + "\n" +
-                "wid: " + Integer.toString(wid);
+        return name;
     }
 }

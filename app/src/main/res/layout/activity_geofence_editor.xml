@@ -107,14 +107,21 @@
                 android:text="@string/toggl_project"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
-            <EditText
+            <!--<EditText-->
+                <!--android:id="@+id/toggl_project_edit_text"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:ems="10"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:text="" />-->
+            <Spinner
                 android:id="@+id/toggl_project_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="" />
+                />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
@@ -126,14 +133,21 @@
                 android:text="@string/toggl_tags"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/toggl_tags_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="" />
+                />
+            <!--<EditText-->
+                <!--android:id="@+id/toggl_tags_edit_text"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:ems="10"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:text="" />-->
         </TableRow>
         <TableRow
             android:layout_width="match_parent"

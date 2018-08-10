@@ -62,6 +62,12 @@
             android:enabled="true"
             android:exported="true" />
 
+        <provider
+            android:name=".Toggl.TogglContentProvider"
+            android:authorities="de.hosenhasser.togfence.togfence.Toggl.toggl_content_provider"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity android:name=".GeofenceEditor"
             android:parentActivityName=".MainTogfence"/>
     </application>

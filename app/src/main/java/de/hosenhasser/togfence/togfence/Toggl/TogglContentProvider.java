@@ -62,7 +62,7 @@ public class TogglContentProvider extends ContentProvider {
                     " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " id INTEGER, " +
                     " name TEXT NOT NULL, " +
-                    " at TEXT, " +
+                    " at TEXT " +
                     " );";
 
     static final String CREATE_DB_TABLE_TAGS =
@@ -70,7 +70,7 @@ public class TogglContentProvider extends ContentProvider {
                     " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " id INTEGER, " +
                     " name TEXT NOT NULL, " +
-                    " at TEXT, " +
+                    " at TEXT " +
                     " );";
 
 
@@ -316,167 +316,189 @@ public class TogglContentProvider extends ContentProvider {
         return null;
     }
 
-    
-
-    // TODO: refactor code duplication
-    public static List<GeofenceElement> getAllGeofenceElementsList(ContentResolver contentResolver) {
-        ArrayList<GeofenceElement> mGeofenceElements = new ArrayList<>();
+    private static Cursor getElementCursor(ContentResolver contentResolver, Uri uri,
+                                           String selectionClause, String[] selectionArgs) {
         String[] mProjection = {
-                TogglProjectsContentProvider._ID,
-                TogglProjectsContentProvider.NAME,
-                TogglProjectsContentProvider.LAT,
-                TogglProjectsContentProvider.LON,
-                TogglProjectsContentProvider.RADIUS,
-                TogglProjectsContentProvider.ACTIVE,
-                TogglProjectsContentProvider.TOGGL_PROJECT,
-                TogglProjectsContentProvider.TOGGL_TAGS
+                TogglContentProvider._ID,
+                TogglContentProvider.ID,
+                TogglContentProvider.NAME,
+                TogglContentProvider.AT
         };
-        String mSelectionClause = null;
-        String[] mSelectionArgs = {""};
-        String mSortOrder = TogglProjectsContentProvider.NAME;
+        String mSelectionClause = selectionClause;
+        String[] mSelectionArgs = selectionArgs;
+        String mSortOrder = TogglContentProvider.NAME;
         Cursor mCursor = contentResolver.query(
-                TogglProjectsContentProvider.CONTENT_URI,
-                mProjection,
-                mSelectionClause,
-                null,
-                mSortOrder
-        );
-        if (mCursor != null) {
-            while (mCursor.moveToNext()) {
-                Integer mId = mCursor.getInt(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider._ID)
-                );
-                String mName = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.NAME)
-                );
-                Float mLat = mCursor.getFloat(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.LAT)
-                );
-                Float mLon = mCursor.getFloat(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.LON)
-                );
-                LatLng mPosition = new LatLng(mLat, mLon);
-                int mRadius = mCursor.getInt(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.RADIUS)
-                );
-                String mTogglProject = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.TOGGL_PROJECT)
-                );
-                String mTogglTags = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.TOGGL_TAGS)
-                );
-                boolean mActive =
-                        (mCursor.getInt(
-                                mCursor.getColumnIndex(TogglProjectsContentProvider.ACTIVE)
-                        ) == 1);
-                mGeofenceElements.add(
-                        new GeofenceElement(
-                                mId, mName, mPosition, mRadius, mTogglProject, mTogglTags, mActive
-                        )
-                );
-            }
-        }
-        return mGeofenceElements;
-    }
-
-    public static GeofenceElement getGeofenceElement(ContentResolver contentResolver, int id) {
-        GeofenceElement mGeofenceElement = null;
-        String[] mProjection = {
-                TogglProjectsContentProvider._ID,
-                TogglProjectsContentProvider.NAME,
-                TogglProjectsContentProvider.LAT,
-                TogglProjectsContentProvider.LON,
-                TogglProjectsContentProvider.RADIUS,
-                TogglProjectsContentProvider.ACTIVE,
-                TogglProjectsContentProvider.TOGGL_PROJECT,
-                TogglProjectsContentProvider.TOGGL_TAGS
-        };
-        String mSelectionClause = TogglProjectsContentProvider._ID + " = ?";
-        String[] mSelectionArgs = {Integer.toString(id)};
-        String mSortOrder = TogglProjectsContentProvider.NAME;
-        Cursor mCursor = contentResolver.query(
-                TogglProjectsContentProvider.CONTENT_URI,
+                uri,
                 mProjection,
                 mSelectionClause,
                 mSelectionArgs,
                 mSortOrder
         );
         if (mCursor != null) {
-            if (mCursor.moveToFirst()) {
-                Integer mId = mCursor.getInt(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider._ID)
-                );
-                String mName = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.NAME)
-                );
-                Float mLat = mCursor.getFloat(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.LAT)
-                );
-                Float mLon = mCursor.getFloat(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.LON)
-                );
-                LatLng mPosition = new LatLng(mLat, mLon);
-                int mRadius = mCursor.getInt(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.RADIUS)
-                );
-                String mTogglProject = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.TOGGL_PROJECT)
-                );
-                String mTogglTags = mCursor.getString(
-                        mCursor.getColumnIndex(TogglProjectsContentProvider.TOGGL_TAGS)
-                );
-                boolean mActive =
-                        (mCursor.getInt(
-                                mCursor.getColumnIndex(TogglProjectsContentProvider.ACTIVE)
-                        ) == 1);
-                mGeofenceElement = new GeofenceElement(
-                        mId, mName, mPosition, mRadius, mTogglProject, mTogglTags, mActive);
-            }
+            return mCursor;
         }
-        return mGeofenceElement;
+        return null;
     }
 
-    public static void insertGeofenceElement(ContentResolver contentResolver, GeofenceElement ge) {
+    public static List<TogglProject> getAllProjectsList(ContentResolver contentResolver) {
+        Cursor mCursor = getAllProjectsCursor(contentResolver);
+        ArrayList<TogglProject> mElements = new ArrayList<>();
+        if (mCursor != null) {
+            while (mCursor.moveToNext()) {
+                Integer mId = mCursor.getInt(mCursor.getColumnIndex(TogglContentProvider.ID));
+                String mName = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.NAME));
+                String mAt = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.AT));
+
+                TogglProject mProject = new TogglProject();
+                mProject.id = mId;
+                mProject.name = mName;
+                mProject.at = mAt;
+                mElements.add(mProject);
+            }
+        }
+        return mElements;
+    }
+
+    public static List<TogglTag> getAllTagsList(ContentResolver contentResolver) {
+        Cursor mCursor = getAllTagsCursor(contentResolver);
+        ArrayList<TogglTag> mElements = new ArrayList<>();
+        if (mCursor != null) {
+            while (mCursor.moveToNext()) {
+                Integer mId = mCursor.getInt(mCursor.getColumnIndex(TogglContentProvider.ID));
+                String mName = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.NAME));
+                String mAt = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.AT));
+
+                TogglTag mTag = new TogglTag();
+                mTag.id = mId;
+                mTag.name = mName;
+                mTag.at = mAt;
+                mElements.add(mTag);
+            }
+        }
+        return mElements;
+    }
+
+    public static TogglProject getProjectElement(ContentResolver contentResolver, int id) {
+        TogglProject mProject = null;
+        String[] mSelectionArgs = {Integer.toString(id)};
+        Cursor mCursor = getElementCursor(contentResolver,
+                TogglContentProvider.CONTENT_URI_PROJECTS,
+                TogglContentProvider.ID + " = ?",
+                mSelectionArgs);
+        if (mCursor != null) {
+            if (mCursor.moveToFirst()) {
+                Integer mId = mCursor.getInt(mCursor.getColumnIndex(TogglContentProvider.ID));
+                String mName = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.NAME));
+                String mAt = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.AT));
+
+                mProject = new TogglProject();
+                mProject.id = mId;
+                mProject.name = mName;
+                mProject.at = mAt;
+            }
+        }
+        return mProject;
+    }
+
+    public static TogglTag getTagElement(ContentResolver contentResolver, int id) {
+        TogglTag mTag = null;
+        String[] mSelectionArgs = {Integer.toString(id)};
+        Cursor mCursor = getElementCursor(contentResolver,
+                TogglContentProvider.CONTENT_URI_TAGS,
+                TogglContentProvider.ID + " = ?",
+                mSelectionArgs);
+        if (mCursor != null) {
+            if (mCursor.moveToFirst()) {
+                Integer mId = mCursor.getInt(mCursor.getColumnIndex(TogglContentProvider.ID));
+                String mName = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.NAME));
+                String mAt = mCursor.getString(mCursor.getColumnIndex(TogglContentProvider.AT));
+
+                mTag = new TogglTag();
+                mTag.id = mId;
+                mTag.name = mName;
+                mTag.at = mAt;
+            }
+        }
+        return mTag;
+    }
+
+    public static void insertProjectElement(ContentResolver contentResolver, TogglProject project) {
         ContentValues cv = new ContentValues();
-        cv.put(TogglProjectsContentProvider.NAME, ge.name);
-        cv.put(TogglProjectsContentProvider.LAT, ge.position.latitude);
-        cv.put(TogglProjectsContentProvider.LON, ge.position.longitude);
-        cv.put(TogglProjectsContentProvider.RADIUS, ge.radius);
-        cv.put(TogglProjectsContentProvider.ACTIVE, ge.active);
-        cv.put(TogglProjectsContentProvider.TOGGL_PROJECT, ge.toggl_project);
-        cv.put(TogglProjectsContentProvider.TOGGL_TAGS, ge.toggl_tag);
+        cv.put(TogglContentProvider.ID, project.id);
+        cv.put(TogglContentProvider.NAME, project.name);
+        cv.put(TogglContentProvider.AT, project.at);
 
         contentResolver.insert(
-                TogglProjectsContentProvider.CONTENT_URI, cv
+                TogglContentProvider.CONTENT_URI_PROJECTS, cv
         );
     }
 
-    public static void updateGeofenceElement(ContentResolver contentResolver, GeofenceElement ge) {
+    public static void insertTagElement(ContentResolver contentResolver, TogglTag tag) {
         ContentValues cv = new ContentValues();
-        cv.put(TogglProjectsContentProvider.NAME, ge.name);
-        cv.put(TogglProjectsContentProvider.LAT, ge.position.latitude);
-        cv.put(TogglProjectsContentProvider.LON, ge.position.longitude);
-        cv.put(TogglProjectsContentProvider.RADIUS, ge.radius);
-        cv.put(TogglProjectsContentProvider.ACTIVE, ge.active);
-        cv.put(TogglProjectsContentProvider.TOGGL_PROJECT, ge.toggl_project);
-        cv.put(TogglProjectsContentProvider.TOGGL_TAGS, ge.toggl_tag);
+        cv.put(TogglContentProvider.ID, tag.id);
+        cv.put(TogglContentProvider.NAME, tag.name);
+        cv.put(TogglContentProvider.AT, tag.at);
 
-        String selection = TogglProjectsContentProvider._ID + " = ?";
-        String[] selectionArgs = {Integer.toString(ge._id)};
+        contentResolver.insert(
+                TogglContentProvider.CONTENT_URI_TAGS, cv
+        );
+    }
 
-        contentResolver.update(
-                TogglProjectsContentProvider.CONTENT_URI,
-                cv,
+    public static void updateOrInsertProjectElement(ContentResolver contentResolver, TogglProject project) {
+        ContentValues cv = new ContentValues();
+        cv.put(TogglContentProvider.NAME, project.name);
+        cv.put(TogglContentProvider.AT, project.at);
+
+        String selection = TogglContentProvider.ID + " = ?";
+        String[] selectionArgs = {Integer.toString(project.id)};
+
+        if (getProjectElement(contentResolver, project.id) != null) {
+            contentResolver.update(
+                    TogglContentProvider.CONTENT_URI_PROJECTS,
+                    cv,
+                    selection,
+                    selectionArgs
+            );
+        } else {
+            insertProjectElement(contentResolver, project);
+        }
+    }
+
+    public static void updateOrInsertTagElement(ContentResolver contentResolver, TogglTag tag) {
+        ContentValues cv = new ContentValues();
+        cv.put(TogglContentProvider.NAME, tag.name);
+        cv.put(TogglContentProvider.AT, tag.at);
+
+        String selection = TogglContentProvider.ID + " = ?";
+        String[] selectionArgs = {Integer.toString(tag.id)};
+
+        if (getTagElement(contentResolver, tag.id) != null) {
+            contentResolver.update(
+                    TogglContentProvider.CONTENT_URI_TAGS,
+                    cv,
+                    selection,
+                    selectionArgs
+            );
+        } else {
+            insertTagElement(contentResolver, tag);
+        }
+    }
+
+    public static void deleteProjectElement(ContentResolver contentResolver, int id) {
+        String selection = TogglContentProvider.ID + " = ?";
+        String[] selectionArgs = {Integer.toString(id)};
+        contentResolver.delete(
+                TogglContentProvider.CONTENT_URI_PROJECTS,
                 selection,
                 selectionArgs
         );
     }
 
-    public static void deleteGeofenceElement(ContentResolver contentResolver, int id) {
-        String selection = TogglProjectsContentProvider._ID + " = ?";
+    public static void deleteTagElement(ContentResolver contentResolver, int id) {
+        String selection = TogglContentProvider.ID + " = ?";
         String[] selectionArgs = {Integer.toString(id)};
         contentResolver.delete(
-                TogglProjectsContentProvider.CONTENT_URI,
+                TogglContentProvider.CONTENT_URI_TAGS,
                 selection,
                 selectionArgs
         );

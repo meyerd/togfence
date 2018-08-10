@@ -90,12 +90,12 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 removeGeofencesButtonHandler(view);
             }
         });
-        Button testbutton = (Button) findViewById(R.id.test_button);
-        testbutton.setOnClickListener(new View.OnClickListener() {
+        Button updatetoggldatabutton = (Button) findViewById(R.id.update_toggl_data);
+        updatetoggldatabutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TogglRetrofit tr = TogglRetrofit.getInstance();
-                tr.dumpMe();
+                tr.updateProjectsAndTags(getApplicationContext());
             }
         });
 

@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElement>> {
-
-
     private static final String LOG_TAG = GeofenceElementListLoader.class.getSimpleName();
     private List<GeofenceElement> mGeofence;
     private ContentResolver mContentResolver;
@@ -36,6 +34,7 @@ public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElem
                 GeofencesContentProvider.RADIUS,
                 GeofencesContentProvider.ACTIVE,
                 GeofencesContentProvider.TOGGL_PROJECT,
+                GeofencesContentProvider.TOGGL_PROJECT_TEXT,
                 GeofencesContentProvider.TOGGL_TAGS
         };
         String mSelectionClause = null;
@@ -67,11 +66,17 @@ public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElem
                 int mRadius = mCursor.getInt(
                         mCursor.getColumnIndex(GeofencesContentProvider.RADIUS)
                 );
-                String mTogglProject = mCursor.getString(
+                int mTogglProject = mCursor.getInt(
                         mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_PROJECT)
                 );
-                String mTogglTags = mCursor.getString(
+                String mTogglProjectText = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_PROJECT_TEXT)
+                );
+                int mTogglTags = mCursor.getInt(
                         mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS)
+                );
+                String mTogglTagsText = mCursor.getString(
+                        mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS_TEXT)
                 );
                 boolean mActive =
                         (mCursor.getInt(
@@ -79,7 +84,8 @@ public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElem
                         ) == 1);
                 mGeofenceElements.add(
                         new GeofenceElement(
-                                mId, mName, mPosition, mRadius, mTogglProject, mTogglTags, mActive
+                                mId, mName, mPosition, mRadius, mTogglProject, mTogglProjectText,
+                                mTogglTags, mTogglTagsText, mActive
                         )
                 );
             } while (mCursor.moveToNext());

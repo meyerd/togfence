@@ -1,5 +1,7 @@
 package de.hosenhasser.togfence.togfence.Toggl;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -92,6 +94,42 @@ public class TogglRetrofit {
 
     TogglRetrofit() {
         checkValid();
+    }
+
+    public void updateProjectsAndTags(final Context context) {
+        if(!checkValid()) {
+            return;
+        }
+        Call<FullTogglUser> call = service.fullme();
+        call.enqueue(new Callback<FullTogglUser>() {
+            @Override
+            public void onResponse(Call<FullTogglUser> call, Response<FullTogglUser> response) {
+                Log.i(TAG, response.code() + "");
+                Log.i(TAG, "raw: " + response.raw().body().toString());
+                FullTogglUser u = response.body();
+                Log.i(TAG, "User: " + u.toString());
+                int nProjects = 0;
+                for(TogglProject p : u.projects) {
+                    TogglContentProvider.updateOrInsertProjectElement(context.getContentResolver(), p);
+                    nProjects += 1;
+                }
+                int nTags = 0;
+                for(TogglTag t : u.tags) {
+                    TogglContentProvider.updateOrInsertTagElement(context.getContentResolver(), t);
+                    nTags += 1;
+                }
+                Log.i(TAG, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
+                    Integer.toString(nTags) + " Tags.");
+                Toast.makeText(context, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
+                        Integer.toString(nTags) + " Tags.", Toast.LENGTH_LONG);
+            }
+
+            @Override
+            public void onFailure(Call<FullTogglUser> call, Throwable t) {
+                Log.i(TAG, "toggl user call failed: " + t.getMessage());
+                call.cancel();
+            }
+        });
     }
 
     public void dumpMe() {
