@@ -5,6 +5,8 @@ import java.util.List;
 
 public class TogglTimeEntry {
     public String description;
+    public int id;
+    public int uid;
     public int wid;
     public int pid;
     public int tid;

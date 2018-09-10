@@ -3,6 +3,7 @@ package de.hosenhasser.togfence.togfence.Toggl;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
+import de.hosenhasser.togfence.togfence.GeofenceElement;
 import de.hosenhasser.togfence.togfence.R;
 import de.hosenhasser.togfence.togfence.TogfenceApplication;
 import okhttp3.OkHttpClient;
@@ -79,11 +81,15 @@ public class TogglRetrofit {
         Gson gsonFullTogglUser = new GsonBuilder()
                 .registerTypeAdapter(FullTogglUser.class, new DataDeserializer<FullTogglUser>())
                 .create();
+        Gson gsonTogglTimeEntry = new GsonBuilder()
+                .registerTypeAdapter(TogglTimeEntry.class, new DataDeserializer<TogglTimeEntry>())
+                .create();
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.toggl.com")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gsonFullTogglUser))
                 .addConverterFactory(GsonConverterFactory.create(gsonTogglUser))
+                .addConverterFactory(GsonConverterFactory.create(gsonTogglTimeEntry))
                 .build();
         service = retrofit.create(TogglService.class);
 
@@ -172,10 +178,32 @@ public class TogglRetrofit {
 
     }
 
-    public void createNewStartTimeEntry(String name) {
+    public void createNewStartTimeEntry(GeofenceElement ge) {
         if (!checkValid()) {
             return;
         }
+
+        TogglStartTimeEntry te = new TogglStartTimeEntry();
+        te.time_entry.created_with = "Togfence";
+        te.time_entry.tags.add(ge.toggl_tag_text);
+
+
+        Call<TogglTimeEntry> call = service.startTimeEntry(te);
+        call.enqueue(new Callback<TogglTimeEntry>() {
+            @Override
+            public void onResponse(Call<TogglTimeEntry> call, Response<TogglTimeEntry> response) {
+                Log.i(TAG, response.code() + "");
+                Log.i(TAG, "raw: " + response.raw().body().toString());
+                TogglTimeEntry u = response.body();
+                Log.i(TAG, "timeentry: " + u.toString());
+            }
+
+            @Override
+            public void onFailure(Call<TogglTimeEntry> call, Throwable t) {
+                Log.i(TAG, "toggl start time entry call failed: " + t.getMessage());
+                call.cancel();
+            }
+        });
 
 //        TimeEntry entry = new TimeEntry();
 //        DateTime dt = new DateTime();
@@ -190,7 +218,7 @@ public class TogglRetrofit {
 //        entry = jToggl.createTimeEntry(entry);
     }
 
-    public void createNewStopTimeEntry(String name) {
+    public void createNewStopTimeEntry(GeofenceElement ge) {
         if (!checkValid()) {
             return;
         }

@@ -95,7 +95,12 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             @Override
             public void onClick(View view) {
                 TogglRetrofit tr = TogglRetrofit.getInstance();
-                tr.updateProjectsAndTags(getApplicationContext());
+//                tr.updateProjectsAndTags(getApplicationContext());
+                Geofence g = mGeofenceList.get(0);
+                String req_id = g.getRequestId();
+                int id = Integer.parseInt(req_id);
+                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
+                tr.createNewStartTimeEntry(ge);
             }
         });
 
@@ -206,6 +211,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
             requestPermissions();
             return;
         }
+        refreshGeofenceList();
         addGeofences();
     }
 

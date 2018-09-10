@@ -122,11 +122,29 @@ public class GeofenceEditor extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item,
                 TogglContentProvider.getAllProjectsList(getApplicationContext().getContentResolver()));
         toggl_project_edit_text.setAdapter(toggl_projects_array_adapter);
+        int sel = 0;
+        for(int i = 0; i < toggl_projects_array_adapter.getCount(); i++) {
+            TogglProject proj = toggl_projects_array_adapter.getItem(i);
+            if(proj.name.equals(mGeofenceElement.toggl_project_text)) {
+                sel = i;
+                break;
+            }
+        }
+        toggl_project_edit_text.setSelection(sel);
 //        toggl_tags_edit_text.setText(mGeofenceElement.toggl_tag);
-        ArrayAdapter<TogglTag> togl_tags_array_adapter = new ArrayAdapter<>(getApplicationContext(),
+        ArrayAdapter<TogglTag> toggl_tags_array_adapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 TogglContentProvider.getAllTagsList(getApplicationContext().getContentResolver()));
-        toggl_tags_edit_text.setAdapter(togl_tags_array_adapter);
+        toggl_tags_edit_text.setAdapter(toggl_tags_array_adapter);
+        sel = 0;
+        for(int i = 0; i < toggl_tags_array_adapter.getCount(); i++) {
+            TogglTag tag = toggl_tags_array_adapter.getItem(i);
+            if(tag.name.equals(mGeofenceElement.toggl_tag_text)) {
+                sel = i;
+                break;
+            }
+        }
+        toggl_tags_edit_text.setSelection(sel);
         active_check_box.setChecked(mGeofenceElement.active);
     }
 
