@@ -71,7 +71,7 @@ public class GeofenceTransitionsIntentService extends JobIntentService {
                 String req_id = geofence.getRequestId();
                 int id = Integer.parseInt(req_id);
                 GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(contentResolver, id);
-                jToggl.createNewStartTimeEntry(ge);
+                jToggl.createNewStartTimeEntry(getContentResolver(), ge);
             }
 
             // Send notification and log the transition details.
@@ -88,7 +88,7 @@ public class GeofenceTransitionsIntentService extends JobIntentService {
                 String req_id = geofence.getRequestId();
                 int id = Integer.parseInt(req_id);
                 GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(contentResolver, id);
-                jToggl.createNewStopTimeEntry(ge);
+                jToggl.createNewStopTimeEntry(getContentResolver(), ge);
             }
             // Send notification and log the transition details.
 //            sendNotification(geofenceTransitionDetails);

@@ -13,5 +13,5 @@ public interface TogglService {
     Call<FullTogglUser> fullme();
 
     @POST("/api/v8/time_entries/start")
-    Call<TogglTimeEntry> startTimeEntry(@Body TogglStartTimeEntry startTimeEntry);
+    Call<TogglStartTimeEntryResponse> startTimeEntry(@Body TogglStartTimeEntry startTimeEntry);
 }

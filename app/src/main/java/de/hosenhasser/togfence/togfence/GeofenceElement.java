@@ -19,11 +19,12 @@ public class GeofenceElement {
     public String toggl_project_text;
     public int toggl_tag;
     public String toggl_tag_text;
+    public int running_entry_id;
     public boolean active;
 
     public GeofenceElement(Integer _id, String name, LatLng position, int radius,
                            int toggl_project, String toggl_project_text, int toggl_tag,
-                           String toggl_tag_text, boolean active) {
+                           String toggl_tag_text, int running_entry_id, boolean active) {
         this.name = name;
         this._id = _id;
         this.position = position;
@@ -32,6 +33,7 @@ public class GeofenceElement {
         this.toggl_project_text = toggl_project_text;
         this.toggl_tag = toggl_tag;
         this.toggl_tag_text = toggl_tag_text;
+        this.running_entry_id = running_entry_id;
         this.active = active;
     }
 
@@ -44,6 +46,7 @@ public class GeofenceElement {
         this.toggl_project_text = "";
         this.toggl_tag = 0;
         this.toggl_tag_text = "";
+        this.running_entry_id = -1;
         this.active = false;
     }
 
@@ -56,6 +59,7 @@ public class GeofenceElement {
         this.toggl_project_text = "";
         this.toggl_tag = 0;
         this.toggl_tag_text = "";
+        this.running_entry_id = -1;
         this.active = false;
     }
 
@@ -88,12 +92,15 @@ public class GeofenceElement {
         String mTogglTagsText = mCursor.getString(
                 mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS_TEXT)
         );
+        int mRunningEntryId = mCursor.getInt(
+                mCursor.getColumnIndex(GeofencesContentProvider.RUNNING_ENTRY_ID)
+        );
         boolean mActive =
                 (mCursor.getInt(
                         mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
                 ) == 1);
         return new GeofenceElement(
                 mId, mName, mPosition, mRadius, mTogglProject, mTogglProjectText,
-                mTogglTags, mTogglTagsText, mActive);
+                mTogglTags, mTogglTagsText, mRunningEntryId, mActive);
     }
 }

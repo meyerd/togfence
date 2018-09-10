@@ -37,6 +37,7 @@ public class GeofencesContentProvider extends ContentProvider {
     static final public String TOGGL_PROJECT_TEXT = "toggl_project_text";
     static final public String TOGGL_TAGS = "toggl_tags";
     static final public String TOGGL_TAGS_TEXT = "toggl_tags_text";
+    static final public String RUNNING_ENTRY_ID = "running_entry_id";
 
     static final int GEOFENCES = 1;
     static final int GEOFENCE_ID = 2;
@@ -64,14 +65,15 @@ public class GeofencesContentProvider extends ContentProvider {
                     " toggl_project INTEGER," +
                     " toggl_project_text TEXT," +
                     " toggl_tags INTEGER," +
-                    " toggl_tags_text TEXT" +
+                    " toggl_tags_text TEXT," +
+                    " running_entry_id INTEGER" +
                     ");";
 
     static final String FILL_INITIAL_DATA =
             "INSERT INTO " + GEOFENCES_TABLE_NAME +
-                "(_id, name, lat, lon, radius, active, toggl_project, toggl_project_text, toggl_tags, toggl_tags_text)" +
-                "VALUES (0, \"test\", 48.7648, 9.27025, 100, 1, 0, \"test-project\", 0, \"test-tag\")," +
-                "(1, \"test-deact\", 50.00, 10.00, 100, 0, 0, \"test-project\", 0, \"test-tag\");";
+                "(_id, name, lat, lon, radius, active, toggl_project, toggl_project_text, toggl_tags, toggl_tags_text, running_entry_id)" +
+                "VALUES (0, \"test\", 48.7648, 9.27025, 100, 1, 0, \"test-project\", 0, \"test-tag\", -1)," +
+                "(1, \"test-deact\", 50.00, 10.00, 100, 0, 0, \"test-project\", 0, \"test-tag\", -1);";
 
     private static class GeofencesDatabaseHelper extends SQLiteOpenHelper {
         GeofencesDatabaseHelper(Context context) {
@@ -232,7 +234,8 @@ public class GeofencesContentProvider extends ContentProvider {
                 GeofencesContentProvider.TOGGL_PROJECT,
                 GeofencesContentProvider.TOGGL_PROJECT_TEXT,
                 GeofencesContentProvider.TOGGL_TAGS,
-                GeofencesContentProvider.TOGGL_TAGS_TEXT
+                GeofencesContentProvider.TOGGL_TAGS_TEXT,
+                GeofencesContentProvider.RUNNING_ENTRY_ID
         };
         String mSelectionClause = null;
         String[] mSelectionArgs = {""};
@@ -263,7 +266,8 @@ public class GeofencesContentProvider extends ContentProvider {
                 GeofencesContentProvider.TOGGL_PROJECT,
                 GeofencesContentProvider.TOGGL_PROJECT_TEXT,
                 GeofencesContentProvider.TOGGL_TAGS,
-                GeofencesContentProvider.TOGGL_TAGS_TEXT
+                GeofencesContentProvider.TOGGL_TAGS_TEXT,
+                GeofencesContentProvider.RUNNING_ENTRY_ID
         };
         String mSelectionClause = null;
         String[] mSelectionArgs = {""};
@@ -305,6 +309,9 @@ public class GeofencesContentProvider extends ContentProvider {
                 String mTogglTagsText = mCursor.getString(
                         mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS_TEXT)
                 );
+                int mRunningEntryId = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider.RUNNING_ENTRY_ID)
+                );
                 boolean mActive =
                         (mCursor.getInt(
                                 mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
@@ -312,7 +319,7 @@ public class GeofencesContentProvider extends ContentProvider {
                 mGeofenceElements.add(
                         new GeofenceElement(
                                 mId, mName, mPosition, mRadius, mTogglProject, mTogglProjectText,
-                                mTogglTags, mTogglTagsText, mActive
+                                mTogglTags, mTogglTagsText, mRunningEntryId, mActive
                         )
                 );
             }
@@ -332,7 +339,8 @@ public class GeofencesContentProvider extends ContentProvider {
                 GeofencesContentProvider.TOGGL_PROJECT,
                 GeofencesContentProvider.TOGGL_PROJECT_TEXT,
                 GeofencesContentProvider.TOGGL_TAGS,
-                GeofencesContentProvider.TOGGL_TAGS_TEXT
+                GeofencesContentProvider.TOGGL_TAGS_TEXT,
+                GeofencesContentProvider.RUNNING_ENTRY_ID
         };
         String mSelectionClause = GeofencesContentProvider._ID + " = ?";
         String[] mSelectionArgs = {Integer.toString(id)};
@@ -374,13 +382,16 @@ public class GeofencesContentProvider extends ContentProvider {
                 String mTogglTagsText = mCursor.getString(
                         mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS_TEXT)
                 );
+                int mRunningEntryId = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider.RUNNING_ENTRY_ID)
+                );
                 boolean mActive =
                         (mCursor.getInt(
                                 mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
                         ) == 1);
                 mGeofenceElement = new GeofenceElement(
                         mId, mName, mPosition, mRadius, mTogglProject, mTogglProjectText,
-                        mTogglTags, mTogglTagsText, mActive);
+                        mTogglTags, mTogglTagsText, mRunningEntryId, mActive);
             }
         }
         return mGeofenceElement;
@@ -397,6 +408,7 @@ public class GeofencesContentProvider extends ContentProvider {
         cv.put(GeofencesContentProvider.TOGGL_PROJECT_TEXT, ge.toggl_project_text);
         cv.put(GeofencesContentProvider.TOGGL_TAGS, ge.toggl_tag);
         cv.put(GeofencesContentProvider.TOGGL_TAGS_TEXT, ge.toggl_tag_text);
+        cv.put(GeofencesContentProvider.RUNNING_ENTRY_ID, ge.running_entry_id);
 
         contentResolver.insert(
                 GeofencesContentProvider.CONTENT_URI, cv
@@ -414,6 +426,7 @@ public class GeofencesContentProvider extends ContentProvider {
         cv.put(GeofencesContentProvider.TOGGL_PROJECT_TEXT, ge.toggl_project_text);
         cv.put(GeofencesContentProvider.TOGGL_TAGS, ge.toggl_tag);
         cv.put(GeofencesContentProvider.TOGGL_TAGS_TEXT, ge.toggl_tag_text);
+        cv.put(GeofencesContentProvider.RUNNING_ENTRY_ID, ge.running_entry_id);
 
         String selection = GeofencesContentProvider._ID + " = ?";
         String[] selectionArgs = {Integer.toString(ge._id)};

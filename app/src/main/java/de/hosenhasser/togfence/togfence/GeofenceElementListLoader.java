@@ -78,6 +78,9 @@ public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElem
                 String mTogglTagsText = mCursor.getString(
                         mCursor.getColumnIndex(GeofencesContentProvider.TOGGL_TAGS_TEXT)
                 );
+                int mRunningEntryId = mCursor.getInt(
+                        mCursor.getColumnIndex(GeofencesContentProvider.RUNNING_ENTRY_ID)
+                );
                 boolean mActive =
                         (mCursor.getInt(
                                 mCursor.getColumnIndex(GeofencesContentProvider.ACTIVE)
@@ -85,7 +88,7 @@ public class GeofenceElementListLoader extends AsyncTaskLoader<List<GeofenceElem
                 mGeofenceElements.add(
                         new GeofenceElement(
                                 mId, mName, mPosition, mRadius, mTogglProject, mTogglProjectText,
-                                mTogglTags, mTogglTagsText, mActive
+                                mTogglTags, mTogglTagsText, mRunningEntryId, mActive
                         )
                 );
             } while (mCursor.moveToNext());

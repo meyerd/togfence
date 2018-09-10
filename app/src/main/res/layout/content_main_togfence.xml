@@ -26,12 +26,20 @@
                 android:layout_height="wrap_content"
                 android:text="Stop Geofence"
                 android:id="@+id/stop_geofence_button" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Update Toggl Data"
                 android:id="@+id/update_toggl_data" />
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:id="@+id/testbutton"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
