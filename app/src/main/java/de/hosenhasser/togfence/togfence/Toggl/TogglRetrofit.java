@@ -80,6 +80,7 @@ public class TogglRetrofit {
                 .registerTypeAdapter(TogglUser.class, new DataDeserializer<TogglUser>())
                 .registerTypeAdapter(FullTogglUser.class, new DataDeserializer<FullTogglUser>())
                 .registerTypeAdapter(TogglStartTimeEntryResponse.class, new DataDeserializer<TogglStartTimeEntryResponse>())
+                .registerTypeAdapter(TogglStopTimeEntryResponse.class, new DataDeserializer<TogglStopTimeEntryResponse>())
                 .create();
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.toggl.com")
@@ -193,7 +194,7 @@ public class TogglRetrofit {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
                 TogglStartTimeEntryResponse u = response.body();
-                Log.i(TAG, "timeentry respone: " + u.toString());
+                Log.i(TAG, "start timeentry respone: " + u.toString());
                 thisge.running_entry_id = u.id;
                 GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
             }
@@ -221,6 +222,33 @@ public class TogglRetrofit {
     public void createNewStopTimeEntry(ContentResolver contentResolver, GeofenceElement ge) {
         if (!checkValid()) {
             return;
+        }
+
+        final GeofenceElement thisge = ge;
+        final ContentResolver thiscontentResolver = contentResolver;
+
+        int time_entry_id = ge.running_entry_id;
+        if(time_entry_id > 0) {
+            Call<TogglStopTimeEntryResponse> call = service.stopTimeEntry(time_entry_id);
+            call.enqueue(new Callback<TogglStopTimeEntryResponse>() {
+                @Override
+                public void onResponse(Call<TogglStopTimeEntryResponse> call, Response<TogglStopTimeEntryResponse> response) {
+                    Log.i(TAG, response.code() + "");
+                    Log.i(TAG, "raw: " + response.raw().body().toString());
+                    TogglStopTimeEntryResponse u = response.body();
+                    Log.i(TAG, "stop timeentry respone: " + u.toString());
+                    thisge.running_entry_id = -1;
+                    GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                }
+
+                @Override
+                public void onFailure(Call<TogglStopTimeEntryResponse> call, Throwable t) {
+                    Log.i(TAG, "toggl start time entry call failed: " + t.getMessage());
+                    call.cancel();
+                }
+            });
+        } else {
+            Log.e(TAG, "The time entry to be stopped has no running_entry_id");
         }
 
 //        TimeEntry entry = new TimeEntry();

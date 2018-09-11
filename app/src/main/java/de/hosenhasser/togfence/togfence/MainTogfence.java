@@ -98,8 +98,8 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 tr.updateProjectsAndTags(getApplicationContext());
             }
         });
-        Button testbutton = (Button) findViewById(R.id.testbutton);
-        testbutton.setOnClickListener(new View.OnClickListener() {
+        Button testbutton1 = (Button) findViewById(R.id.testbutton1);
+        testbutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TogglRetrofit tr = TogglRetrofit.getInstance();
@@ -110,6 +110,19 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 tr.createNewStartTimeEntry(getContentResolver(), ge);
             }
         });
+        Button testbutton2 = (Button) findViewById(R.id.testbutton2);
+        testbutton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TogglRetrofit tr = TogglRetrofit.getInstance();
+                Geofence g = mGeofenceList.get(0);
+                String req_id = g.getRequestId();
+                int id = Integer.parseInt(req_id);
+                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
+                tr.createNewStopTimeEntry(getContentResolver(), ge);
+            }
+        });
+
 
         checkGooglePlayServices(this);
 
