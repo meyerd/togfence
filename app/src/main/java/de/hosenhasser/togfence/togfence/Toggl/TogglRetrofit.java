@@ -76,21 +76,15 @@ public class TogglRetrofit {
                 .addInterceptor(new BasicAuthInterceptor(toggl_api_key))
                 .addInterceptor(logging)
                 .build();
-        Gson gsonTogglUser = new GsonBuilder()
+        Gson gsonDataStripper = new GsonBuilder()
                 .registerTypeAdapter(TogglUser.class, new DataDeserializer<TogglUser>())
-                .create();
-        Gson gsonFullTogglUser = new GsonBuilder()
                 .registerTypeAdapter(FullTogglUser.class, new DataDeserializer<FullTogglUser>())
-                .create();
-        Gson gsonTogglStartTimeEntryResponse = new GsonBuilder()
                 .registerTypeAdapter(TogglStartTimeEntryResponse.class, new DataDeserializer<TogglStartTimeEntryResponse>())
                 .create();
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.toggl.com")
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gsonFullTogglUser))
-                .addConverterFactory(GsonConverterFactory.create(gsonTogglStartTimeEntryResponse))
-                .addConverterFactory(GsonConverterFactory.create(gsonTogglUser))
+                .addConverterFactory(GsonConverterFactory.create(gsonDataStripper))
                 .build();
         service = retrofit.create(TogglService.class);
 
