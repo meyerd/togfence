@@ -6,6 +6,8 @@
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".TogfenceApplication"
         android:allowBackup="true"
@@ -45,7 +47,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_places_geo_api"/>
+            android:value="@string/google_places_geo_api" />
 
         <activity
             android:name=".SettingsActivity"
@@ -60,16 +62,52 @@
             android:name=".GeofencesContentProvider"
             android:authorities="de.hosenhasser.togfence.togfence.geofences_content_provider"
             android:enabled="true"
-            android:exported="true" />
-
+            android:exported="false" />
         <provider
             android:name=".Toggl.TogglContentProvider"
             android:authorities="de.hosenhasser.togfence.togfence.Toggl.toggl_content_provider"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
-        <activity android:name=".GeofenceEditor"
-            android:parentActivityName=".MainTogfence"/>
+        <activity
+            android:name=".GeofenceEditor"
+            android:parentActivityName=".MainTogfence" />
+
+        <service
+            android:name=".TogfenceBackgroundTasks"
+            android:label="Togfence Background Tasks Service"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <!--<intent-filter>-->
+                <!--<action android:name=".TogfenceBackgroundTasks" />-->
+            <!--</intent-filter>-->
+        </service>
+
+        <service
+            android:name=".TogfenceStartGeofencingOnBootJob"
+            android:label="Togfence Start Geofencing on Boot Service"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <!--<intent-filter>-->
+            <!--<action android:name=".TogfenceBackgroundTasks" />-->
+            <!--</intent-filter>-->
+        </service>
+
+        <receiver
+            android:name=".StartBackgroundTasksOnBootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="StartBackgroundTasksOnBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".UpdateTogglInformation"
+            android:exported="false"></service>
+
+        <service
+            android:name=".GeofencesManagerService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

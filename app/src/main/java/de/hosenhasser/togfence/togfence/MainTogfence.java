@@ -37,25 +37,13 @@ import java.util.List;
 
 import de.hosenhasser.togfence.togfence.Toggl.TogglRetrofit;
 
-public class MainTogfence extends AppCompatActivity implements OnCompleteListener<Void>, GeofenceElementFragment.OnListFragmentInteractionListener {
-    private GeofencingClient mGeofencingClient;
-    private ArrayList<Geofence> mGeofenceList;
-    private PendingIntent mGeofencePendingIntent;
-
+public class MainTogfence extends AppCompatActivity implements GeofenceElementFragment.OnListFragmentInteractionListener {
     private final static String TAG = "MainTogfence";
 
     private final static int REQUEST_LOCATION_PERMISSION_CODE = 5551;
-    private boolean isMonitoring = false;
 
-    private enum PendingGeofenceTask {
-        ADD, REMOVE, NONE
-    }
-
-    private static final String PACKAGE_NAME = "com.google.android.gms.location.Geofence";
-
-    static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
-
-    private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
+    private static final String PACKAGE_NAME = "de.hosenhasser.togfence.togfence";
+    static final String MAIN_SHOWN_KEY = PACKAGE_NAME + ".MAIN_SHOWN_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,60 +68,73 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
         startbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addGeofencesButtonHandler(view);
+                GeofencesManagerService.startActionStartGeofencing(getApplicationContext());
             }
         });
         Button stopbutton = (Button) findViewById(R.id.stop_geofence_button);
         stopbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                removeGeofencesButtonHandler(view);
+                GeofencesManagerService.startActionStopGeofencing(getApplicationContext());
             }
         });
         Button updatetoggldatabutton = (Button) findViewById(R.id.update_toggl_data);
         updatetoggldatabutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TogglRetrofit tr = TogglRetrofit.getInstance();
-                tr.updateProjectsAndTags(getApplicationContext());
+               UpdateTogglInformation.startUpdateTogglInformation(getApplicationContext());
             }
         });
         Button testbutton1 = (Button) findViewById(R.id.testbutton1);
         testbutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TogglRetrofit tr = TogglRetrofit.getInstance();
-                Geofence g = mGeofenceList.get(0);
-                String req_id = g.getRequestId();
-                int id = Integer.parseInt(req_id);
-                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
-                tr.createNewStartTimeEntry(getContentResolver(), ge);
+//                TogglRetrofit tr = TogglRetrofit.getInstance();
+//                Geofence g = mGeofenceList.get(0);
+//                String req_id = g.getRequestId();
+//                int id = Integer.parseInt(req_id);
+//                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
+//                tr.createNewStartTimeEntry(getContentResolver(), ge);
             }
         });
         Button testbutton2 = (Button) findViewById(R.id.testbutton2);
         testbutton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TogglRetrofit tr = TogglRetrofit.getInstance();
-                Geofence g = mGeofenceList.get(0);
-                String req_id = g.getRequestId();
-                int id = Integer.parseInt(req_id);
-                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
-                tr.createNewStopTimeEntry(getContentResolver(), ge);
+                 StartBackgroundTasksOnBootReceiver.scheduleStartGeofencingOnBoot(getApplicationContext());
+//                TogglRetrofit tr = TogglRetrofit.getInstance();
+//                Geofence g = mGeofenceList.get(0);
+//                String req_id = g.getRequestId();
+//                int id = Integer.parseInt(req_id);
+//                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
+//                tr.createNewStopTimeEntry(getContentResolver(), ge);
             }
         });
 
 
         checkGooglePlayServices(this);
-
-        mGeofencePendingIntent = null;
-        mGeofenceList = new ArrayList<>();
-
-        mGeofencingClient = LocationServices.getGeofencingClient(this);
     }
 
     private void checkGooglePlayServices(Activity activity) {
         Task task = GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(activity);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        GeofencesManagerService.startActionUpdateGeofences(getApplicationContext());
+
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            GeofencesManagerService.startActionPerformPendingGeofenceTask(getApplicationContext());
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(MAIN_SHOWN_KEY, true)
+                .apply();
     }
 
     private boolean checkPermissions() {
@@ -182,159 +183,11 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        refreshGeofenceList();
-
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            performPendingGeofenceTask();
-        }
-    }
-
-    private GeofencingRequest getGeofencingRequest() {
-        if (mGeofenceList.size() < 1) {
-            Toast.makeText(
-                    TogfenceApplication.getAppContext(),
-                    TogfenceApplication.getAppContext().getString(R.string.no_active_geofence),
-                    Toast.LENGTH_LONG).show();
-        }
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
-        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
-        // is already inside that geofence.
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-
-        // Add the geofences to be monitored by geofencing service.
-        builder.addGeofences(mGeofenceList);
-
-        // Return a GeofencingRequest.
-        return builder.build();
-    }
-
-    @Override
     public void onListFragmentInteraction(GeofenceElement item) {
         Log.i(TAG, "click on: " + item.name);
         Intent intent = new Intent(this, GeofenceEditor.class);
         intent.putExtra(GeofenceEditor.EXTRA_GEOFENCE_ELEMENT_ID, item._id);
         startActivity(intent);
-
-    }
-
-    public void addGeofencesButtonHandler(View view) {
-        TogglRetrofit jtoggl = TogglRetrofit.getInstance();
-        if (!checkPermissions()) {
-            mPendingGeofenceTask = PendingGeofenceTask.ADD;
-            requestPermissions();
-            return;
-        }
-        refreshGeofenceList();
-        addGeofences();
-    }
-
-    @SuppressWarnings("MissingPermission")
-    private void addGeofences() {
-        if (!checkPermissions()) {
-            showSnackbar(getString(R.string.insufficient_permissions));
-            return;
-        }
-
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnCompleteListener(this);
-    }
-
-    public void removeGeofencesButtonHandler(View view) {
-        if (!checkPermissions()) {
-            mPendingGeofenceTask = PendingGeofenceTask.REMOVE;
-            requestPermissions();
-            return;
-        }
-        removeGeofences();
-    }
-
-    @SuppressWarnings("MissingPermission")
-    private void removeGeofences() {
-        if (!checkPermissions()) {
-            showSnackbar(getString(R.string.insufficient_permissions));
-            return;
-        }
-
-        mGeofencingClient.removeGeofences(getGeofencePendingIntent()).addOnCompleteListener(this);
-    }
-
-    @Override
-    public void onComplete(@NonNull Task<Void> task) {
-        mPendingGeofenceTask = PendingGeofenceTask.NONE;
-        if (task.isSuccessful()) {
-            updateGeofencesAdded(!getGeofencesAdded());
-//            setButtonsEnabledState();
-
-            int messageId = getGeofencesAdded() ? R.string.geofences_added :
-                    R.string.geofences_removed;
-            Toast.makeText(this, getString(messageId), Toast.LENGTH_SHORT).show();
-        } else {
-            // Get the status code for the error and log it using a user-friendly message.
-            String errorMessage = GeofenceErrorMessages.getErrorString(this, task.getException());
-            Log.w(TAG, errorMessage);
-        }
-    }
-
-    public void refreshGeofenceList() {
-        int ctr = 0;
-        List<GeofenceElement> mGeofenceElements =
-                GeofencesContentProvider.getAllGeofenceElementsList(
-                        getContentResolver());
-        mGeofenceList.clear();
-        for (GeofenceElement ge : mGeofenceElements) {
-            if (ge.active) {
-                mGeofenceList.add(new Geofence.Builder()
-                        // Set the request ID of the geofence. This is a string to identify this
-                        // geofence.
-                        .setRequestId(Integer.toString(ge._id))
-
-                        .setCircularRegion(
-                                ge.position.latitude,
-                                ge.position.longitude,
-                                ge.radius
-                        )
-                        .setNotificationResponsiveness(
-                                Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(
-                                        "responsiveness", "300")) * 1000)
-                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                        .setLoiteringDelay(5 * 60 * 1000)
-                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                                Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                        .build());
-            }
-        }
-
-        Log.i(TAG, Integer.toString(ctr) + " geofences added to list.");
-    }
-
-    private boolean getGeofencesAdded() {
-        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-                GEOFENCES_ADDED_KEY, false);
-    }
-
-    private void updateGeofencesAdded(boolean added) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putBoolean(GEOFENCES_ADDED_KEY, added)
-                .apply();
-    }
-
-    /**
-     * Performs the geofencing task that was pending until location permission was granted.
-     */
-    private void performPendingGeofenceTask() {
-        if (mPendingGeofenceTask == PendingGeofenceTask.ADD) {
-            addGeofences();
-        } else if (mPendingGeofenceTask == PendingGeofenceTask.REMOVE) {
-            removeGeofences();
-        }
     }
 
     @Override
@@ -348,7 +201,7 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "Permission granted.");
-                performPendingGeofenceTask();
+                GeofencesManagerService.startActionPerformPendingGeofenceTask(getApplicationContext());
             } else {
                 // Permission denied.
 
@@ -370,7 +223,6 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
                                 startActivity(intent);
                             }
                         });
-                mPendingGeofenceTask = PendingGeofenceTask.NONE;
             }
         }
     }
@@ -440,64 +292,5 @@ public class MainTogfence extends AppCompatActivity implements OnCompleteListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    public void startGeofencing() {
-        if (!checkPermissions()) {
-            requestPermissions();
-            return;
-        }
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-            .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.i(TAG, "Geofencing started.");
-                    Snackbar.make(findViewById(R.id.toolbar), "Geofencing started", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                }
-            })
-            .addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "Adding geofences failed: " + e.toString() + "(" +
-                            e.getMessage() + ")");
-                    Snackbar.make(findViewById(R.id.toolbar), "Geofence failed, make sure that location access is granted and network location is enabled.",
-                            // Snackbar.LENGTH_LONG)
-                            60 * 1000)
-                            .setAction("Dismiss", null).show();
-                }
-            });
-    }
-
-    public void stopGeofencing() {
-        mGeofencingClient.removeGeofences(getGeofencePendingIntent())
-            .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.i(TAG, "Geofences removed.");
-                    Snackbar.make(findViewById(R.id.toolbar), "Geofences removed", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                }
-            })
-            .addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "Removing geofences failed.");
-                    Snackbar.make(findViewById(R.id.toolbar), "Geofence remove failed", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-    }
-
-    private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
-        }
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // addGeofences() and removeGeofences().
-        mGeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return mGeofencePendingIntent;
     }
 }
