@@ -331,10 +331,13 @@ public class GeofencesManagerService extends IntentService implements OnComplete
 
     @Override
     public void onComplete(@NonNull Task<Void> task) {
+        boolean added = mPendingGeofenceTask.equals(GeofencesManagerService.PendingGeofenceTask.ADD);
         mPendingGeofenceTask = GeofencesManagerService.PendingGeofenceTask.NONE;
         if (task.isSuccessful()) {
-            updateGeofencesAdded(!getGeofencesAdded());
+//            updateGeofencesAdded(!getGeofencesAdded());
+            updateGeofencesAdded(added);
 //            setButtonsEnabledState();
+//            MainTogfence.setStartStopGeofencesIcon();
 
             int messageId = getGeofencesAdded() ? R.string.geofences_added :
                     R.string.geofences_removed;

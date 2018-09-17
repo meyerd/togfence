@@ -148,6 +148,11 @@ public class GeofenceEditor extends AppCompatActivity {
         active_check_box.setChecked(mGeofenceElement.active);
     }
 
+    private void updateTextfieldsLocationOnly() {
+        latitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.latitude));
+        longitude_text_view.setText(String.format("%.5f", mGeofenceElement.position.longitude));
+    }
+
     public void deleteGeofenceButtonHandler(View view) {
         if (!mNewGeofence) {
             GeofencesContentProvider.deleteGeofenceElement(
@@ -206,7 +211,7 @@ public class GeofenceEditor extends AppCompatActivity {
 //                String toastMsg = String.format("Place: %s", place.getName());
 //                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
                 mGeofenceElement.position = position;
-                updateTextfields();
+                updateTextfieldsLocationOnly();
             }
         }
     }

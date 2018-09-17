@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -43,7 +44,10 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
     private final static int REQUEST_LOCATION_PERMISSION_CODE = 5551;
 
     private static final String PACKAGE_NAME = "de.hosenhasser.togfence.togfence";
+    static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
     static final String MAIN_SHOWN_KEY = PACKAGE_NAME + ".MAIN_SHOWN_KEY";
+
+    private Menu mOptionsMenu = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +115,6 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
             }
         });
 
-
         checkGooglePlayServices(this);
     }
 
@@ -135,6 +138,7 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
                 .edit()
                 .putBoolean(MAIN_SHOWN_KEY, true)
                 .apply();
+        setStartStopGeofencesIcon();
     }
 
     private boolean checkPermissions() {
@@ -255,10 +259,33 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
         }
     }
 
+    public void setStartStopGeofencesIcon() {
+        if (mOptionsMenu != null) {
+            boolean geofencesAdded = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+                    GEOFENCES_ADDED_KEY, false);
+
+            MenuItem startStopMenuItem = mOptionsMenu.findItem(R.id.action_geofences_active);
+            startStopMenuItem.setIcon(geofencesAdded ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play);
+        }
+    }
+
+    private void toggleStartStopGeofences() {
+        boolean geofencesAdded = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+                GEOFENCES_ADDED_KEY, false);
+        if(geofencesAdded) {
+            GeofencesManagerService.startActionStopGeofencing(getApplicationContext());
+        } else {
+            GeofencesManagerService.startActionStartGeofencing(getApplicationContext());
+        }
+        invalidateOptionsMenu();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_togfence, menu);
+        mOptionsMenu = menu;
+        setStartStopGeofencesIcon();
         return true;
     }
 
@@ -269,6 +296,8 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        } else if (id == R.id.action_geofences_active) {
+            toggleStartStopGeofences();
         }
 
         return super.onOptionsItemSelected(item);
@@ -282,6 +311,7 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
         } else {
             Log.i(TAG, "Google Services available.");
         }
+        setStartStopGeofencesIcon();
     }
 
     @Override

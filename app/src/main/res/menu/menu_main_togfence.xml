@@ -3,9 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.hosenhasser.togfence.togfence.MainTogfence">
     <item
+        android:id="@+id/action_geofences_active"
+        android:orderInCategory="1"
+        android:title="@string/geofences_active"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_media_play" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_preferences"/>
+
 </menu>
