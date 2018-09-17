@@ -16,12 +16,13 @@ public class TogfenceBackgroundTasks extends JobService {
     public boolean onStartJob(JobParameters params) {
         Context context = getApplicationContext();
 
+
         Boolean mainShown = PreferenceManager.getDefaultSharedPreferences(
                 TogfenceApplication.getAppContext())
                 .getBoolean(MAIN_SHOWN_KEY, false);
-        if (mainShown) {
-            UpdateTogglInformation.startUpdateTogglInformation(context);
-        }
+//        if (mainShown) {
+//            UpdateTogglInformation.startUpdateTogglInformation(context);
+//        }
         StartBackgroundTasksOnBootReceiver.scheduleTogfenceBackgroundTasks(context);
         return true;
     }
