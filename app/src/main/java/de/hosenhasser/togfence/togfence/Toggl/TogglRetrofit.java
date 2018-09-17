@@ -183,6 +183,7 @@ public class TogglRetrofit {
         te.time_entry.created_with = "Togfence";
         te.time_entry.tags.add(ge.toggl_tag_text);
         te.time_entry.description = ge.name;
+        te.time_entry.pid = ge.toggl_project;
 
         final GeofenceElement thisge = ge;
         final ContentResolver thiscontentResolver = contentResolver;
