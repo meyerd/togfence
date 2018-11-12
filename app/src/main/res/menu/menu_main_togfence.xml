@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.hosenhasser.togfence.togfence.MainTogfence">
     <item
-        android:id="@+id/action_geofences_active"
+        android:id="@+id/action_refresh_list"
         android:orderInCategory="1"
+        android:title="@string/refresh_list"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_popup_sync" />
+    <item
+        android:id="@+id/action_geofences_active"
+        android:orderInCategory="10"
         android:title="@string/geofences_active"
         app:showAsAction="always"
         android:icon="@android:drawable/ic_media_play" />

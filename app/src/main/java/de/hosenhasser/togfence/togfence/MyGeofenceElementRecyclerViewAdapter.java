@@ -62,6 +62,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
         holder.mNameView.setText(ge.name);
         holder.mItemNumberView.setText(String.format("%d", position));
         holder.mActiveView.setText(ge.active ? "active" : "");
+        holder.mRunningView.setText(ge.running_entry_id > 0 ? "running" : "");
         holder.mLatitudeView.setText(String.format("%.5f", ge.position.latitude));
         holder.mLongitudeView.setText(String.format("%.5f", ge.position.longitude));
         holder.mRadiusView.setText(String.format("%d", ge.radius));
@@ -154,6 +155,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
         public final TextView mItemNumberView;
         public final TextView mNameView;
         public final TextView mActiveView;
+        public final TextView mRunningView;
         public final TextView mLatitudeView;
         public final TextView mLongitudeView;
         public final TextView mRadiusView;
@@ -166,6 +168,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
             mItemNumberView = (TextView) view.findViewById(R.id.item_number);
             mNameView = (TextView) view.findViewById(R.id.name);
             mActiveView = (TextView) view.findViewById(R.id.active);
+            mRunningView = (TextView) view.findViewById(R.id.running);
             mLongitudeView = (TextView) view.findViewById(R.id.latitude);
             mLatitudeView = (TextView) view.findViewById(R.id.longitude);
             mRadiusView = (TextView) view.findViewById(R.id.radius);

@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 import de.hosenhasser.togfence.togfence.GeofenceElement;
 import de.hosenhasser.togfence.togfence.GeofencesContentProvider;
@@ -81,6 +82,7 @@ public class TogglRetrofit {
                 .registerTypeAdapter(FullTogglUser.class, new DataDeserializer<FullTogglUser>())
                 .registerTypeAdapter(TogglStartTimeEntryResponse.class, new DataDeserializer<TogglStartTimeEntryResponse>())
                 .registerTypeAdapter(TogglStopTimeEntryResponse.class, new DataDeserializer<TogglStopTimeEntryResponse>())
+                .registerTypeAdapter(TogglCurrentTimeEntryResponse.class, new DataDeserializer<TogglCurrentTimeEntryResponse>())
                 .create();
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.toggl.com")
@@ -88,8 +90,6 @@ public class TogglRetrofit {
                 .addConverterFactory(GsonConverterFactory.create(gsonDataStripper))
                 .build();
         service = retrofit.create(TogglService.class);
-
-//                PreferenceManager.getDefaultSharedPreferences(TogfenceApplication.getAppContext()).getString("toggl_api_key", "INVALID")
 
         return true;
     }
@@ -154,24 +154,44 @@ public class TogglRetrofit {
                 call.cancel();
             }
         });
+    }
 
-//        Call<TogglUser> call = service.me();
-//        call.enqueue(new Callback<TogglUser>() {
-//            @Override
-//            public void onResponse(Call<TogglUser> call, Response<TogglUser> response) {
-//                Log.i(TAG, response.code() + "");
-//                Log.i(TAG, "raw: " + response.raw().body().toString());
-//                TogglUser u = response.body();
-//                Log.i(TAG, "User: " + u.toString());
-//            }
+    public void getCurrentTimeEntry(ContentResolver contentResolver) {
+        if(!checkValid()) {
+            return;
+        }
+
+        final ContentResolver thiscontentResolver = contentResolver;
+
+        Call<TogglCurrentTimeEntryResponse> call = service.getCurentTimeEntry();
+        call.enqueue(new Callback<TogglCurrentTimeEntryResponse>() {
+            @Override
+            public void onResponse(Call<TogglCurrentTimeEntryResponse> call, Response<TogglCurrentTimeEntryResponse> response) {
+                Log.i(TAG, response.code() + "");
+                Log.i(TAG, "raw: " + response.raw().body().toString());
+                TogglCurrentTimeEntryResponse u = response.body();
+                Log.i(TAG, "current timeentry respone: " + u.toString());
+                List<GeofenceElement> gelist = GeofencesContentProvider.getAllGeofenceElementsList(thiscontentResolver);
+//                GeofenceElement myge = null;
+//                for(GeofenceElement ge : gelist) {
+//                    Log.i(TAG, "ge " + ge._id);
+//                    Log.i(TAG, "ge tag id" + ge.toggl_tag);
+//                    Log.i(TAG, "running e " + ge.running_entry_id);
+//                    Log.i(TAG, "")
+//                    Log.i(TAG, "geall" + ge.toString());
 //
-//            @Override
-//            public void onFailure(Call<TogglUser> call, Throwable t) {
-//                Log.i(TAG, "toggl user call failed: " + t.getMessage());
-//                call.cancel();
-//            }
-//        });
+//                }
 
+//                thisge.running_entry_id = u.id;
+//                GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+            }
+
+            @Override
+            public void onFailure(Call<TogglCurrentTimeEntryResponse> call, Throwable t) {
+                Log.i(TAG, "toggl current time entry call failed: " + t.getMessage());
+                call.cancel();
+            }
+        });
     }
 
     public void createNewStartTimeEntry(ContentResolver contentResolver, GeofenceElement ge) {
@@ -206,18 +226,6 @@ public class TogglRetrofit {
                 call.cancel();
             }
         });
-
-//        TimeEntry entry = new TimeEntry();
-//        DateTime dt = new DateTime();
-//        entry.setStart(dt);
-//        entry.setDuration(1);
-//        entry.setDescription(
-//                TogfenceApplication.getAppContext().getString(R.string.toggl_description_start) +
-//                        "|" + name
-//        );
-//        entry.setCreatedWith(TogfenceApplication.getAppContext().getString(R.string.toggl_created_with));
-//
-//        entry = jToggl.createTimeEntry(entry);
     }
 
     public void createNewStopTimeEntry(ContentResolver contentResolver, GeofenceElement ge) {
@@ -251,18 +259,6 @@ public class TogglRetrofit {
         } else {
             Log.e(TAG, "The time entry to be stopped has no running_entry_id");
         }
-
-//        TimeEntry entry = new TimeEntry();
-//        DateTime dt = new DateTime();
-//        entry.setStart(dt);
-//        entry.setDuration(1);
-//        entry.setDescription(
-//                TogfenceApplication.getAppContext().getString(R.string.toggl_description_stop) +
-//                        "|" + name
-//        );
-//        entry.setCreatedWith(TogfenceApplication.getAppContext().getString(R.string.toggl_created_with));
-//
-//        entry = jToggl.createTimeEntry(entry);
     }
 
 }

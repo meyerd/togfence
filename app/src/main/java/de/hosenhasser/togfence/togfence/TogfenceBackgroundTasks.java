@@ -2,8 +2,11 @@ package de.hosenhasser.togfence.togfence;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.preference.PreferenceManager;
+
+import de.hosenhasser.togfence.togfence.Toggl.TogglRetrofit;
 
 public class TogfenceBackgroundTasks extends JobService {
     private static final String PACKAGE_NAME = "de.hosenhasser.togfence.togfence";

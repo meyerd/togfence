@@ -25,8 +25,8 @@ public class StartBackgroundTasksOnBootReceiver extends BroadcastReceiver {
     public static void scheduleTogfenceBackgroundTasks(Context context) {
         ComponentName serviceComponent = new ComponentName(context, TogfenceBackgroundTasks.class);
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
-        builder.setMinimumLatency(1000 * 60 * 60 * 12);  // 12 hours
-        builder.setOverrideDeadline(1000 * 60 * 60 * 24);  // 24 hours
+        builder.setMinimumLatency(1000 * 60 * 60 * 2);  // 2 hours
+        builder.setOverrideDeadline(1000 * 60 * 60 * 5);  // 5 hours
         JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(builder.build());
     }

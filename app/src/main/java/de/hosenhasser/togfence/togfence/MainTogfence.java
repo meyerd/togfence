@@ -93,12 +93,13 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
         testbutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                TogglRetrofit tr = TogglRetrofit.getInstance();
+                TogglRetrofit tr = TogglRetrofit.getInstance();
 //                Geofence g = mGeofenceList.get(0);
 //                String req_id = g.getRequestId();
 //                int id = Integer.parseInt(req_id);
 //                GeofenceElement ge = GeofencesContentProvider.getGeofenceElement(getContentResolver(), id);
 //                tr.createNewStartTimeEntry(getContentResolver(), ge);
+                tr.getCurrentTimeEntry(getContentResolver());
             }
         });
         Button testbutton2 = (Button) findViewById(R.id.testbutton2);
@@ -139,6 +140,9 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
                 .putBoolean(MAIN_SHOWN_KEY, true)
                 .apply();
         setStartStopGeofencesIcon();
+
+        UpdateTogglInformation.startUpdateTogglInformation(getApplicationContext());
+        UpdateTogglInformation.startUpdateTogglInformation(getApplicationContext());
     }
 
     private boolean checkPermissions() {
@@ -298,6 +302,8 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
             startActivity(intent);
         } else if (id == R.id.action_geofences_active) {
             toggleStartStopGeofences();
+        } else if (id == R.id.action_refresh_list) {
+            UpdateTogglInformation.startUpdateRunningTask(getApplicationContext());
         }
 
         return super.onOptionsItemSelected(item);

@@ -37,11 +37,14 @@
     <string name="pick_location">Pick Location</string>
     <string name="name">Name</string>
     <string name="active">active</string>
+    <string name="running">running</string>
+    <string name="stopped">stopped</string>
     <string name="delete">delete</string>
     <string name="save">save</string>
 
     <string name="geofences_active">Start/Stop Geofences</string>
 
+    <string name="refresh_list">Refresh List</string>
     <string name="settings">Settings</string>
 
     <string name="pref_header_general">General</string>

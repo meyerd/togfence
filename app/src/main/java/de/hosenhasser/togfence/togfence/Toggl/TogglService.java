@@ -19,4 +19,7 @@ public interface TogglService {
 
     @PUT("/api/v8/time_entries/{time_entry_id}/stop")
     Call<TogglStopTimeEntryResponse> stopTimeEntry(@Path("time_entry_id") int time_entry_id);
+
+    @GET("/api/v8/time_entries/current")
+    Call<TogglCurrentTimeEntryResponse> getCurentTimeEntry();
 }
