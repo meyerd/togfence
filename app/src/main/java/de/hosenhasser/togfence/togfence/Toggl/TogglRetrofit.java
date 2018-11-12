@@ -109,21 +109,23 @@ public class TogglRetrofit {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
                 FullTogglUser u = response.body();
-                Log.i(TAG, "User: " + u.toString());
-                int nProjects = 0;
-                for(TogglProject p : u.projects) {
-                    TogglContentProvider.updateOrInsertProjectElement(context.getContentResolver(), p);
-                    nProjects += 1;
+                if(u != null) {
+                    Log.i(TAG, "User: " + u.toString());
+                    int nProjects = 0;
+                    for (TogglProject p : u.projects) {
+                        TogglContentProvider.updateOrInsertProjectElement(context.getContentResolver(), p);
+                        nProjects += 1;
+                    }
+                    int nTags = 0;
+                    for (TogglTag t : u.tags) {
+                        TogglContentProvider.updateOrInsertTagElement(context.getContentResolver(), t);
+                        nTags += 1;
+                    }
+                    Log.i(TAG, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
+                            Integer.toString(nTags) + " Tags.");
+                    Toast.makeText(context, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
+                            Integer.toString(nTags) + " Tags.", Toast.LENGTH_LONG);
                 }
-                int nTags = 0;
-                for(TogglTag t : u.tags) {
-                    TogglContentProvider.updateOrInsertTagElement(context.getContentResolver(), t);
-                    nTags += 1;
-                }
-                Log.i(TAG, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
-                    Integer.toString(nTags) + " Tags.");
-                Toast.makeText(context, "Updated Toggl data: " + Integer.toString(nProjects) + " Projects, " +
-                        Integer.toString(nTags) + " Tags.", Toast.LENGTH_LONG);
             }
 
             @Override
@@ -145,7 +147,9 @@ public class TogglRetrofit {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
                 FullTogglUser u = response.body();
-                Log.i(TAG, "User: " + u.toString());
+                if(u != null) {
+                    Log.i(TAG, "User: " + u.toString());
+                }
             }
 
             @Override
@@ -170,20 +174,25 @@ public class TogglRetrofit {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
                 TogglCurrentTimeEntryResponse u = response.body();
-                Log.i(TAG, "current timeentry respone: " + u.toString());
-                List<GeofenceElement> gelist = GeofencesContentProvider.getAllGeofenceElementsList(thiscontentResolver);
-//                GeofenceElement myge = null;
-//                for(GeofenceElement ge : gelist) {
-//                    Log.i(TAG, "ge " + ge._id);
-//                    Log.i(TAG, "ge tag id" + ge.toggl_tag);
-//                    Log.i(TAG, "running e " + ge.running_entry_id);
-//                    Log.i(TAG, "")
-//                    Log.i(TAG, "geall" + ge.toString());
-//
-//                }
-
-//                thisge.running_entry_id = u.id;
-//                GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                if(u != null) {
+                    Log.i(TAG, "current timeentry respone: " + u.toString());
+                    List<GeofenceElement> gelist = GeofencesContentProvider.getAllGeofenceElementsList(thiscontentResolver);
+                    for(GeofenceElement ge : gelist) {
+                        if(ge.name.equals(u.description)) {
+                            ge.running_entry_id = u.id;
+                            Log.i(TAG, "updating running id if ge " + ge._id + " to " + u.id);
+                            GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, ge);
+                        }
+                    }
+                } else {
+                    Log.i(TAG, "no current timeentry response, clearing geofence status");
+                    List<GeofenceElement> gelist = GeofencesContentProvider.getAllGeofenceElementsList(thiscontentResolver);
+                    for (GeofenceElement ge : gelist) {
+                        ge.running_entry_id = -1;
+                        Log.i(TAG, "clearing running status for ge id " + ge._id);
+                        GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, ge);
+                    }
+                }
             }
 
             @Override
@@ -215,9 +224,11 @@ public class TogglRetrofit {
                 Log.i(TAG, response.code() + "");
                 Log.i(TAG, "raw: " + response.raw().body().toString());
                 TogglStartTimeEntryResponse u = response.body();
-                Log.i(TAG, "start timeentry respone: " + u.toString());
-                thisge.running_entry_id = u.id;
-                GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                if(u != null) {
+                    Log.i(TAG, "start timeentry respone: " + u.toString());
+                    thisge.running_entry_id = u.id;
+                    GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                }
             }
 
             @Override
@@ -245,9 +256,11 @@ public class TogglRetrofit {
                     Log.i(TAG, response.code() + "");
                     Log.i(TAG, "raw: " + response.raw().body().toString());
                     TogglStopTimeEntryResponse u = response.body();
-                    Log.i(TAG, "stop timeentry respone: " + u.toString());
-                    thisge.running_entry_id = -1;
-                    GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                    if(u != null) {
+                        Log.i(TAG, "stop timeentry respone: " + u.toString());
+                        thisge.running_entry_id = -1;
+                        GeofencesContentProvider.updateGeofenceElement(thiscontentResolver, thisge);
+                    }
                 }
 
                 @Override
