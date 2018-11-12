@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -248,6 +249,7 @@ public class GeofencesContentProvider extends ContentProvider {
                 mSortOrder
         );
         if (mCursor != null) {
+            mCursor.setNotificationUri(contentResolver, GeofencesContentProvider.CONTENT_URI);
             return mCursor;
         }
         return null;
@@ -413,6 +415,7 @@ public class GeofencesContentProvider extends ContentProvider {
         contentResolver.insert(
                 GeofencesContentProvider.CONTENT_URI, cv
         );
+        contentResolver.notifyChange(GeofencesContentProvider.CONTENT_URI, null);
     }
 
     public static void updateGeofenceElement(ContentResolver contentResolver, GeofenceElement ge) {
@@ -437,6 +440,7 @@ public class GeofencesContentProvider extends ContentProvider {
                 selection,
                 selectionArgs
         );
+        contentResolver.notifyChange(GeofencesContentProvider.CONTENT_URI, null);
     }
 
     public static void deleteGeofenceElement(ContentResolver contentResolver, int id) {
@@ -447,5 +451,6 @@ public class GeofencesContentProvider extends ContentProvider {
                 selection,
                 selectionArgs
         );
+        contentResolver.notifyChange(GeofencesContentProvider.CONTENT_URI, null);
     }
 }

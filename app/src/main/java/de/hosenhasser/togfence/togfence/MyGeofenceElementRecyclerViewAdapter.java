@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
         if (mCursor != null) {
             mCursor.registerDataSetObserver(mDataSetObserver);
         }
+        setHasStableIds(true);
         mListener = listener;
     }
 
@@ -78,6 +80,8 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
                 }
             }
         });
+
+//        onBindViewHolder(holder, mCursor);
     }
 
     @Override
@@ -89,6 +93,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
     }
 
     public Cursor swapCursor(Cursor newCursor) {
+        Log.i("mgerva", "swapcursor");
         if (newCursor == mCursor) {
             return null;
         }
@@ -110,6 +115,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
             notifyDataSetChanged();
             //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
+
         return oldCursor;
     }
 
@@ -130,7 +136,7 @@ public class MyGeofenceElementRecyclerViewAdapter extends RecyclerView.Adapter<M
 
     @Override
     public void setHasStableIds(boolean hasStableIds) {
-        super.setHasStableIds(true);
+        super.setHasStableIds(hasStableIds);
     }
 
     private class NotifyingDataSetObserver extends DataSetObserver {
