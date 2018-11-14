@@ -25,6 +25,9 @@
     <string name="toggl_description_stop">togfence: stop</string>
     <string name="toggl_created_with">Togfence</string>
 
+    <string name="show_debugging_buttons_summary">Show some buttons, with which some debugging features can be triggered.</string>
+    <string name="show_debugging_buttons_title">Show debug buttons</string>
+
     <string name="radius">Radius</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>

@@ -40,4 +40,10 @@
         android:summary="@string/pref_description_responsiveness"
         android:defaultValue="300" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="show_debugging_buttons"
+        android:summary="@string/show_debugging_buttons_summary"
+        android:title="@string/show_debugging_buttons_title" />
+
 </PreferenceScreen>

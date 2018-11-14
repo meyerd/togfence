@@ -8,18 +8,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,7 +42,9 @@ import java.util.List;
 
 import de.hosenhasser.togfence.togfence.Toggl.TogglRetrofit;
 
-public class MainTogfence extends AppCompatActivity implements GeofenceElementFragment.OnListFragmentInteractionListener {
+public class MainTogfence extends AppCompatActivity implements
+        GeofenceElementFragment.OnListFragmentInteractionListener,
+        SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = "MainTogfence";
 
     private final static int REQUEST_LOCATION_PERMISSION_CODE = 5551;
@@ -48,6 +54,7 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
     static final String MAIN_SHOWN_KEY = PACKAGE_NAME + ".MAIN_SHOWN_KEY";
 
     private Menu mOptionsMenu = null;
+    private SwipeRefreshLayout mSwipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,12 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
                 startActivity(intent);
             }
         });
+
+        GridLayout debugLayout = (GridLayout) findViewById(R.id.debug_button_layout);
+        Boolean showDebugButtons = PreferenceManager.getDefaultSharedPreferences(
+                TogfenceApplication.getAppContext())
+                .getBoolean("show_debugging_buttons", false);
+        debugLayout.setVisibility(showDebugButtons ? View.VISIBLE : View.GONE);
 
         Button startbutton = (Button) findViewById(R.id.start_geofence_button);
         startbutton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +128,9 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
 //                tr.createNewStopTimeEntry(getContentResolver(), ge);
             }
         });
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        mSwipeLayout.setOnRefreshListener(this);
 
         checkGooglePlayServices(this);
     }
@@ -307,6 +323,18 @@ public class MainTogfence extends AppCompatActivity implements GeofenceElementFr
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeLayout.setRefreshing(true);
+        UpdateTogglInformation.startUpdateRunningTask(getApplicationContext());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 4000);
     }
 
     @Override
