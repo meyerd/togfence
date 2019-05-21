@@ -41,8 +41,7 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     private static final String ACTION_UPDATE_GEOFENCES = "de.hosenhasser.togfence.togfence.action.UPDATE_GEOFENCES";
     private static final String ACTION_PERFORM_PENDING_GEOFENCE_TASK = "de.hosenhasser.togfence.togfence.action.PERFORM_PENDING_GEOFENCE_TASK";
 
-//    private static final String EXTRA_PARAM1 = "de.hosenhasser.togfence.togfence.extra.PARAM1";
-//    private static final String EXTRA_PARAM2 = "de.hosenhasser.togfence.togfence.extra.PARAM2";
+    private static final String NO_USER_POPUP = "de.hosenhasser.togfence.togfence.extra.NO_USER_POPUP";
 
     private GeofencingClient mGeofencingClient;
     private ArrayList<Geofence> mGeofenceList;
@@ -59,6 +58,8 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
 
     private boolean isMonitoring = false;
+
+    private boolean popup = true;
 
     private Context mContext;
 
@@ -81,9 +82,6 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     public static void startActionStartGeofencing(Context context) {
         Intent intent = new Intent(context, GeofencesManagerService.class);
         intent.setAction(ACTION_START_GEOFENCING);
-//        intent.putExtra(EXTRA_PARAM1, param1);
-//        intent.putExtra(EXTRA_PARAM2, param2);
-//        ContextCompat.startForegroundService(intent);
         context.startService(intent);
     }
 
@@ -110,10 +108,12 @@ public class GeofencesManagerService extends IntentService implements OnComplete
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_START_GEOFENCING.equals(action)) {
-//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+                final boolean popup = intent.getBooleanExtra(NO_USER_POPUP, false);
+                this.popup = popup;
                 handleActionStartGeofencing();
             } else if (ACTION_STOP_GEOFENCING.equals(action)) {
+                final boolean popup = intent.getBooleanExtra(NO_USER_POPUP, false);
+                this.popup = popup;
                 handleActionStopGeofencing();
             } else if (ACTION_UPDATE_GEOFENCES.equals(action)) {
                 handleActionUpdateGeofences();
@@ -125,51 +125,10 @@ public class GeofencesManagerService extends IntentService implements OnComplete
 
     private void handleActionStartGeofencing() {
         addGeofencesHandler();
-//        if (!checkPermissions()) {
-//            requestPermissions();
-//            return;
-//        }
-//        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-//                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.i(TAG, "Geofencing started.");
-////                        Snackbar.make(findViewById(R.id.toolbar), "Geofencing started", Snackbar.LENGTH_SHORT)
-////                                .setAction("Action", null).show();
-//                    }
-//                })
-//                .addOnFailureListener(this, new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Adding geofences failed: " + e.toString() + "(" +
-//                                e.getMessage() + ")");
-////                        Snackbar.make(findViewById(R.id.toolbar), "Geofence failed, make sure that location access is granted and network location is enabled.",
-////                                // Snackbar.LENGTH_LONG)
-////                                60 * 1000)
-////                                .setAction("Dismiss", null).show();
-//                    }
-//                });
     }
 
     private void handleActionStopGeofencing() {
         removeGeofencesHandler();
-//        mGeofencingClient.removeGeofences(getGeofencePendingIntent())
-//                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.i(TAG, "Geofences removed.");
-////                        Snackbar.make(findViewById(R.id.toolbar), "Geofences removed", Snackbar.LENGTH_SHORT)
-////                                .setAction("Action", null).show();
-//                    }
-//                })
-//                .addOnFailureListener(this, new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Removing geofences failed.");
-////                        Snackbar.make(findViewById(R.id.toolbar), "Geofence remove failed", Snackbar.LENGTH_LONG)
-////                                .setAction("Action", null).show();
-//                    }
-//                });
     }
 
     private void handleActionUpdateGeofences() {
@@ -215,11 +174,6 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     }
 
     public void addGeofencesHandler() {
-//        if (!checkPermissions()) {
-//            mPendingGeofenceTask = MainTogfence.PendingGeofenceTask.ADD;
-//            requestPermissions();
-//            return;
-//        }
         refreshGeofenceList();
         addGeofences();
     }
@@ -228,21 +182,12 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     private void addGeofences() {
         if(!getMainShown())
             return;
-//        if (!checkPermissions()) {
-//            showSnackbar(getString(R.string.insufficient_permissions));
-//            return;
-//        }
 
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
                 .addOnCompleteListener(this);
     }
 
     public void removeGeofencesHandler() {
-//        if (!checkPermissions()) {
-//            mPendingGeofenceTask = MainTogfence.PendingGeofenceTask.REMOVE;
-//            requestPermissions();
-//            return;
-//        }
         removeGeofences();
     }
 
@@ -250,11 +195,6 @@ public class GeofencesManagerService extends IntentService implements OnComplete
     private void removeGeofences() {
         if(!getMainShown())
             return;
-
-//        if (!checkPermissions()) {
-//            showSnackbar(getString(R.string.insufficient_permissions));
-//            return;
-//        }
 
         mGeofencingClient.removeGeofences(getGeofencePendingIntent()).addOnCompleteListener(this);
     }
@@ -334,19 +274,19 @@ public class GeofencesManagerService extends IntentService implements OnComplete
         boolean added = mPendingGeofenceTask.equals(GeofencesManagerService.PendingGeofenceTask.ADD);
         mPendingGeofenceTask = GeofencesManagerService.PendingGeofenceTask.NONE;
         if (task.isSuccessful()) {
-//            updateGeofencesAdded(!getGeofencesAdded());
             updateGeofencesAdded(added);
-//            setButtonsEnabledState();
-//            MainTogfence.setStartStopGeofencesIcon();
 
             int messageId = getGeofencesAdded() ? R.string.geofences_added :
                     R.string.geofences_removed;
-            Toast.makeText(getApplicationContext(), getString(messageId), Toast.LENGTH_SHORT).show();
+            if(this.popup) {
+                Toast.makeText(getApplicationContext(), getString(messageId), Toast.LENGTH_SHORT).show();
+            }
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this, task.getException());
             Log.w(TAG, errorMessage);
         }
+        this.popup = true;
     }
 
     private PendingIntent getGeofencePendingIntent() {
